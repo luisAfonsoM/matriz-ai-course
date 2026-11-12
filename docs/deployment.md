@@ -3,7 +3,7 @@
 * **Projeto:** Matriz — Plataforma de Gestão de Projetos e Acompanhamento de Equipas
 * **Contexto:** Ficha Prática Laboratorial 05 — Automação, Contentorização e CI/CD
 * **Stack de Entrega:** Docker (Multi-Stage Build), Docker Compose, GitHub Actions, SQLite Persistente
-* **Documentos de Referência:** [`AGENTS.md`](../AGENTS.md) | [`README.md`](../README.md) | [`docs/architecture.md`](architecture.md) | [`Dockerfile`](../Dockerfile) | [`docker-compose.yml`](../docker-compose.yml)
+* **Documentos de Referência:** [`AGENTS.md`](../AGENTS.md) | [`README.md`](../README.md) | [`docs/architecture.md`](architecture.md) | [`Dockerfile`](../Dockerfile) | [`compose.yaml`](../compose.yaml) | [`.github/workflows/ci.yml`](../.github/workflows/ci.yml)
 * **Data:** 12 de Novembro de 2026
 * **Versão:** 1.0 — Guia de Operações e Deployment
 
@@ -64,7 +64,7 @@ O [`Dockerfile`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/m
 
 ## 3. Orquestração com Docker Compose
 
-O ficheiro [`docker-compose.yml`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/docker-compose.yml) centraliza a orquestração do serviço e dos volumes:
+O ficheiro [`compose.yaml`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/compose.yaml) (especificação canónica Compose v2) centraliza a orquestração do serviço, da rede dedicada e dos volumes:
 
 ```yaml
 services:
@@ -84,6 +84,8 @@ services:
       - PORT=3000
     volumes:
       - matriz_sqlite_data:/app/prisma
+    networks:
+      - matriz_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/"]
       interval: 30s
@@ -91,8 +93,14 @@ services:
       retries: 3
       start_period: 15s
 
+networks:
+  matriz_network:
+    name: matriz_network
+    driver: bridge
+
 volumes:
   matriz_sqlite_data:
+    name: matriz_sqlite_data
     driver: local
 ```
 
@@ -131,16 +139,47 @@ Após o arranque do contentor, a aplicação fica disponível em **`http://local
 
 O repositório inclui a automação de Integração Contínua em [`.github/workflows/ci.yml`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/.github/workflows/ci.yml). O pipeline executa 4 etapas sequenciais a cada `push` ou `pull_request` nas branches `master` e `main`:
 
+* **Princípio de Menor Privilégio (*Least Privilege*):** O workflow define explicitamente `permissions: contents: read`, impedindo escrita em repositório ou elevação de privilégios.
+* **Segurança e Higienização de Segredos:** Nenhuma credencial de produção é exposta. O ambiente de teste e build utiliza variáveis fictícias e seguras para a base de dados SQLite e tokens de sessão (`DATABASE_URL: "file:./dev.db"`, `AUTH_SECRET: "matriz-poc-super-secret-key-2026-auth"`).
+
+### Etapas do Pipeline (Jobs):
 1. **Job `typecheck`:**
-   * Executa `npm ci`, `npx prisma generate` e valida tipos com `npx tsc --noEmit`.
-2. **Job `test`:**
-   * Aplica migrações em ambiente isolado (`prisma migrate deploy`).
-   * Executa a suite completa: unitários ([`tests/task-title-unit.test.ts`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/tests/task-title-unit.test.ts)), integração de API ([`tests/tasks-integration.test.ts`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/tests/tasks-integration.test.ts)), regressão de segurança ([`tests/security-idor.test.ts`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/tests/security-idor.test.ts)) e verificação formal ([`tests/mvp-verification.test.ts`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/tests/mvp-verification.test.ts)).
-3. **Job `build`:**
-   * Valida a compilação de produção do Next.js Standalone.
-4. **Job `docker-smoke-test`:**
+   * Executa `npm ci`, `npx prisma generate` e valida rigorosamente a tipagem estática sem emissão (`npx tsc --noEmit`).
+2. **Job `test` (depende de `typecheck`):**
+   * Aplica migrações em ambiente isolado (`npx prisma migrate deploy`).
+   * Executa o povoamento inicial (`seed`).
+   * Executa a suite completa de testes automatizados:
+     - Testes Unitários de Validação de Título ([`tests/task-title-unit.test.ts`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/tests/task-title-unit.test.ts))
+     - Testes de Integração de API & Persistência ([`tests/tasks-integration.test.ts`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/tests/tasks-integration.test.ts))
+     - Testes de Regressão de Segurança & IDOR ([`tests/security-idor.test.ts`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/tests/security-idor.test.ts))
+     - Suite Formal de Verificação do MVP ([`tests/mvp-verification.test.ts`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/tests/mvp-verification.test.ts))
+3. **Job `build` (depende de `test`):**
+   * Valida a compilação completa de produção do Next.js Standalone (`npm run build`).
+4. **Job `docker-smoke-test` (depende estritamente de `[test, build]`):**
    * Constrói a imagem Docker oficial com caching do Buildx.
    * Realiza um teste de fumo (*smoke test*): instancia o contentor, aguarda a inicialização e valida a resposta HTTP com `curl -f http://localhost:3000/`.
+   * **Garantia de Integridade:** Se qualquer teste unitário ou de integração falhar no job `test`, os jobs subsequentes `build` e `docker-smoke-test` são imediatamente cancelados, impedindo a geração ou promoção de imagens defeituosas.
+
+---
+
+### 5.1 Validação Experimental de Falha Controlada (*Chaos / Fault Injection*)
+De acordo com os requisitos da Ficha 05 Exercício 04, foi realizada uma validação adicional através da introdução temporária de uma falha controlada num teste para comprovar que a pipeline e os comandos bloqueiam a entrega:
+
+1. **Injeção da Falha:** No teste unitário `TC-VAL-01` de [`tests/task-title-unit.test.ts`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/tests/task-title-unit.test.ts), foi forçada a asserção `assert.equal(result.success, false)`.
+2. **Resultado Obtido (Falha com Código de Saída 1):**
+   ```text
+   ❌ [FAIL] TC-VAL-01: Título nominal comum de tamanho padrão é aceite
+      └─ Erro: FALHA CONTROLADA CI: Forçando asserção errada para validar paragem do CI
+   true !== false
+   RESUMO DA SUITE UNITÁRIA: 12 Passaram, 1 Falharam.
+   Process exited with code 1
+   ```
+3. **Comportamento no CI:** O runner do GitHub Actions deteta o código de saída diferente de zero (`exit code 1`), marcando o job `test` como **Failed** e cancelando a execução dos jobs dependentes `build` e `docker-smoke-test`.
+4. **Recuperação e Reposição:** A asserção defeituosa foi removida e o teste reexecutado, confirmando o restabelecimento imediato:
+   ```text
+   RESUMO DA SUITE UNITÁRIA: 13 Passaram, 0 Falharam.
+   Process exited with code 0
+   ```
 
 ---
 
