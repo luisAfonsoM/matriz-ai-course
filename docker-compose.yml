@@ -1,0 +1,27 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: matriz:latest
+    container_name: matriz-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:/app/prisma/dev.db
+      - AUTH_SECRET=matriz-poc-super-secret-key-2026-auth
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      - matriz_sqlite_data:/app/prisma
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  matriz_sqlite_data:
+    driver: local

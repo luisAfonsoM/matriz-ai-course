@@ -26,6 +26,7 @@
 # SQLite Database & Prisma
 prisma/*.db
 prisma/*.db-journal
+prisma/dist
 
 # Debug logs
 npm-debug.log*

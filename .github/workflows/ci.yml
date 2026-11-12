@@ -1,0 +1,139 @@
+name: Matriz CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+env:
+  NODE_ENV: test
+  DATABASE_URL: "file:./dev.db"
+  AUTH_SECRET: "matriz-poc-super-secret-key-2026-auth"
+
+jobs:
+  # ----------------------------------------------------------------------------
+  # 1. Verificação Estática de Tipagem (TypeScript)
+  # ----------------------------------------------------------------------------
+  typecheck:
+    name: Typecheck & Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Verify TypeScript types (tsc --noEmit)
+        run: npx tsc --noEmit
+
+  # ----------------------------------------------------------------------------
+  # 2. Execução da Suite de Testes Automatizados
+  # ----------------------------------------------------------------------------
+  test:
+    name: Automated Tests Suite
+    runs-on: ubuntu-latest
+    needs: typecheck
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply Prisma database migrations
+        run: npx prisma migrate deploy
+
+      - name: Seed initial demo data
+        run: |
+          npx tsc prisma/seed.ts --target ES2022 --module NodeNext --moduleResolution NodeNext --outDir prisma/dist
+          node prisma/dist/seed.js
+
+      - name: Run Unit Tests (Task Title Validation - Ex 2)
+        run: node tests/task-title-unit.test.ts
+
+      - name: Run Integration Tests (API & SQLite - Ex 3)
+        run: node tests/tasks-integration.test.ts
+
+      - name: Run Security & IDOR Regression Tests (Ex 5)
+        run: node tests/security-idor.test.ts
+
+      - name: Run Formal Verification MVP Suite (Casos 01 a 09)
+        run: node tests/mvp-verification.test.ts
+
+  # ----------------------------------------------------------------------------
+  # 3. Validação da Compilação de Produção Next.js
+  # ----------------------------------------------------------------------------
+  build:
+    name: Next.js Production Build
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Compile seed script
+        run: npx tsc prisma/seed.ts --target ES2022 --module NodeNext --moduleResolution NodeNext --outDir prisma/dist
+
+      - name: Build Next.js standalone application
+        run: npm run build
+
+  # ----------------------------------------------------------------------------
+  # 4. Construção e Teste de Fumo do Contentor Docker
+  # ----------------------------------------------------------------------------
+  docker-smoke-test:
+    name: Docker Build & Smoke Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          tags: matriz:ci
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test container execution
+        run: |
+          docker run -d --name matriz-smoke -p 3000:3000 matriz:ci
+          sleep 12
+          docker ps
+          curl -f http://localhost:3000/ || (docker logs matriz-smoke && exit 1)
+          docker stop matriz-smoke && docker rm matriz-smoke

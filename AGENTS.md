@@ -102,3 +102,10 @@ O projeto utiliza a execução nativa de TypeScript via Node.js (v20+ ou v26+) e
 * **Suite de Gestão de Tarefas (CRUD, Filtros & Anti-Espaços):** `node tests/tasks-crud.test.ts`
 * **Suite de Gestão de Projetos (CRUD, Pesquisa & Cascata):** `node tests/projects-crud.test.ts`
 * **Suite de Autenticação e RBAC:** `node tests/auth-rbac.test.ts`
+
+### 7.4 Contentorização e Execução com Docker
+* **Construção da imagem multi-stage:** `docker compose build` (ou `npm run docker:build`)
+* **Arranque dos contentores com persistência:** `docker compose up -d` (ou `npm run docker:up`)
+* **Verificação de estado e saúde:** `docker compose ps`
+* **Inspeção de logs em tempo real:** `docker compose logs -f` (ou `npm run docker:logs`)
+* **Paragem dos contentores:** `docker compose down` (ou `npm run docker:down`)

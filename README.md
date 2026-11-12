@@ -185,6 +185,22 @@ npm run start
 ```
 A compilação otimiza os assets e o servidor de produção arranca na porta 3000 com saída de telemetria estática.
 
+#### Em Contentor Docker com Docker Compose (Recomendado):
+A plataforma dispõe de contentorização multi-stage e persistência relacional SQLite:
+```bash
+# 1. Construir e iniciar o contentor em background
+docker compose up -d --build
+# ou: npm run docker:up
+
+# 2. Inspecionar estado e registos do contentor
+docker compose ps
+docker compose logs -f
+
+# 3. Parar o serviço
+docker compose down
+```
+Aceda à aplicação em [http://localhost:3000](http://localhost:3000). O contentor executa automaticamente as migrações e o seed de dados de demonstração. Consulte o [Manual de Deployment](docs/deployment.md) para detalhes completos de operações.
+
 ---
 
 ## 8. Execução dos Testes Automatizados
