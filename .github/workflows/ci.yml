@@ -72,19 +72,19 @@ jobs:
           node prisma/dist/seed.js
 
       - name: Run Unit Tests (Task Title Validation - Ex 2)
-        run: node tests/task-title-unit.test.ts
+        run: npx tsx tests/task-title-unit.test.ts
 
       - name: Run Integration Tests (API & SQLite - Ex 3)
-        run: node tests/tasks-integration.test.ts
+        run: npx tsx tests/tasks-integration.test.ts
 
       - name: Run Security & IDOR Regression Tests (Ex 5)
-        run: node tests/security-idor.test.ts
+        run: npx tsx tests/security-idor.test.ts
 
       - name: Run Formal Verification MVP Suite (Casos 01 a 09)
-        run: node tests/mvp-verification.test.ts
+        run: npx tsx tests/mvp-verification.test.ts
 
       - name: Run Health & Observability Suite (Desafio B)
-        run: node tests/health-observability.test.ts
+        run: npx tsx tests/health-observability.test.ts
 
   # ----------------------------------------------------------------------------
   # 3. Validação da Compilação de Produção Next.js
@@ -140,7 +140,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Scan Docker image for vulnerabilities with Trivy (Desafio A)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: "matriz:ci"
           format: "table"

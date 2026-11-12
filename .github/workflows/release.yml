@@ -54,11 +54,11 @@ jobs:
           DATABASE_URL: "file:./dev.db"
           AUTH_SECRET: "matriz-poc-super-secret-key-2026-auth"
         run: |
-          node tests/task-title-unit.test.ts
-          node tests/tasks-integration.test.ts
-          node tests/security-idor.test.ts
-          node tests/health-observability.test.ts
-          node tests/mvp-verification.test.ts
+          npx tsx tests/task-title-unit.test.ts
+          npx tsx tests/tasks-integration.test.ts
+          npx tsx tests/security-idor.test.ts
+          npx tsx tests/health-observability.test.ts
+          npx tsx tests/mvp-verification.test.ts
 
   # ----------------------------------------------------------------------------
   # 2. Construção e Publicação no GitHub Container Registry (GHCR)
@@ -107,7 +107,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Scan published image with Trivy (Desafio A)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version || 'latest' }}
           format: "table"
