@@ -90,7 +90,11 @@ Para assegurar reprodutibilidade estrita a partir de uma cópia limpa do reposit
 * **Arranque de produção:** `npm run start`
 
 ### 7.3 Execução das Suites de Testes Automatizados
-O projeto utiliza a execução nativa de TypeScript via Node.js (v20+ ou v26+):
+O projeto utiliza a execução nativa de TypeScript via Node.js (v20+ ou v26+) e Playwright para testes End-to-End:
+* **Suite End-to-End no Navegador Headless (Playwright - Ficha 4 Ex 4):** `npm run test:e2e`
+* **Suite de Regressão de Segurança e IDOR (Ficha 4 Ex 5):** `node tests/security-idor.test.ts`
+* **Suite de Integração de Tarefas & API (Ficha 4 Ex 3):** `node tests/tasks-integration.test.ts`
+* **Suite de Testes Unitários da Regra do Título (Ficha 4 Ex 2):** `node tests/task-title-unit.test.ts`
 * **Suite Formal de Verificação do MVP (Casos 01 a 09):** `node tests/mvp-verification.test.ts`
 * **Suite de Integração Frontend & Métricas:** `node tests/frontend-integration.test.ts`
 * **Suite de Comentários de Tarefas & Persistência:** `node tests/task-comments.test.ts`

@@ -339,11 +339,20 @@ export class TasksService {
           message: "Apenas o Gestor de Projeto pode alterar o nível de prioridade da tarefa.",
         };
       }
-      if (data.assigneeId !== undefined && data.assigneeId !== user.id && data.assigneeId !== null) {
-        return {
-          status: "FORBIDDEN",
-          message: "Membros de equipa apenas podem atribuir tarefas a si próprios.",
-        };
+      if (data.assigneeId !== undefined) {
+        if (data.assigneeId !== null && data.assigneeId !== user.id) {
+          return {
+            status: "FORBIDDEN",
+            message: "Membros de equipa apenas podem atribuir tarefas a si próprios.",
+          };
+        }
+        // Proteção IDOR (SEC-02): Membro não pode desassociar tarefas atribuídas a outros utilizadores
+        if (data.assigneeId === null && existing.assigneeId && existing.assigneeId !== user.id) {
+          return {
+            status: "FORBIDDEN",
+            message: "Membros de equipa apenas podem desassociar tarefas atribuídas a si próprios.",
+          };
+        }
       }
     }
 
@@ -361,6 +370,11 @@ export class TasksService {
           where: { taskId_userId: { taskId, userId: data.assigneeId } },
           create: { taskId, userId: data.assigneeId },
           update: {},
+        });
+      } else if (existing.assigneeId) {
+        // Sincronizar desassociação na tabela de junção N:M (evita estado desincronizado)
+        await prisma.taskAssignment.deleteMany({
+          where: { taskId, userId: existing.assigneeId },
         });
       }
     }

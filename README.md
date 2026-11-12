@@ -189,10 +189,14 @@ A compilação otimiza os assets e o servidor de produção arranca na porta 300
 
 ## 8. Execução dos Testes Automatizados
 
-Todas as suites de testes utilizam a execução nativa TypeScript via Node.js:
+Todas as suites de testes utilizam a execução nativa TypeScript via Node.js e Playwright para o fluxo End-to-End:
 
 | Suite | Âmbito / Módulo Testado | Asserções | Comando de Execução |
 |---|---|:---:|---|
+| **End-to-End (Playwright)** | Fluxo completo do utilizador na interface (Login $\to$ Tarefas $\to$ Criação $\to$ Listagem) | 1 E2E | `npm run test:e2e` |
+| **Segurança & Regressão IDOR** | Prevenção de bypass X-User-Id, bloqueio de IDOR na desassociação e RBAC | 21 | `node tests/security-idor.test.ts` |
+| **Integração de Tarefas & API** | Criação, consulta por ID, persistência SQLite e 5 cenários negativos com teardown | 33 | `node tests/tasks-integration.test.ts` |
+| **Validação Unitária de Título** | Casos válidos, inválidos e análise de valores-limite (BVA nos limiares 3 e 150) | 13 | `node tests/task-title-unit.test.ts` |
 | **Verificação Formal MVP** | Validação, RBAC, anti-spoofing, persistência durável pós-reabertura (Casos 01 a 09) | 34 | `node tests/mvp-verification.test.ts` |
 | **Integração Frontend & Métricas** | Agregação analítica, KPIs, percentagem, velocidade semanal e cliente API | 15 | `node tests/frontend-integration.test.ts` |
 | **Comentários de Tarefas** | Threads de comentários, ordenação cronológica, inferência de autor e persistência | 28 | `node tests/task-comments.test.ts` |
@@ -204,6 +208,11 @@ Todas as suites de testes utilizam a execução nativa TypeScript via Node.js:
 **Comando para executar a suite principal de verificação ponta a ponta:**
 ```bash
 node tests/mvp-verification.test.ts
+```
+
+**Comando para executar o teste End-to-End com Playwright:**
+```bash
+npm run test:e2e
 ```
 
 **Para inspecionar visualmente os registos da base de dados:**

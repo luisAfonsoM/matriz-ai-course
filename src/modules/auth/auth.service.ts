@@ -114,14 +114,7 @@ export async function getAuthenticatedUser(request: Request): Promise<Omit<User,
     }
   }
 
-  // 3. Fallback controlado para X-User-Id (útil para automação de testes e chamadas diretas com ID)
-  if (!userId) {
-    const xUserId = request.headers.get("x-user-id");
-    if (xUserId) {
-      userId = xUserId;
-    }
-  }
-
+  // Apenas sessões criptograficamente autenticadas (Cookie ou Bearer) são aceites
   if (!userId) {
     return null;
   }
