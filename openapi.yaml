@@ -27,11 +27,72 @@ tags:
     description: Operações de gestão, ciclo de vida e transições de estado de tarefas (Kanban).
   - name: Métricas
     description: Indicadores analíticos agregados e dados para o Dashboard.
+  - name: Observabilidade & Saúde
+    description: Verificação de disponibilidade do serviço, latência do SQLite e telemetria de memória.
 
 security:
   - UserAuth: []
 
 paths:
+  /health:
+    get:
+      summary: Verificação de disponibilidade e saúde (Healthcheck)
+      description: >
+        Retorna o estado operacional do serviço, executando um ping ativo à base de dados
+        relacional SQLite (SELECT 1), medindo a latência em milissegundos e reportando
+        tempo de atividade (uptime) e consumo de memória RAM.
+      operationId: getHealthStatus
+      tags:
+        - Observabilidade & Saúde
+      security: []
+      responses:
+        '200':
+          description: Serviço operacional e base de dados acessível.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, timestamp, uptimeSeconds, service, version, checks]
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  timestamp:
+                    type: string
+                    format: date-time
+                  uptimeSeconds:
+                    type: integer
+                    example: 3600
+                  service:
+                    type: string
+                    example: "matriz-app"
+                  version:
+                    type: string
+                    example: "1.1.0-rc.1"
+                  checks:
+                    type: object
+                    properties:
+                      database:
+                        type: object
+                        properties:
+                          status:
+                            type: string
+                            example: "up"
+                          dialect:
+                            type: string
+                            example: "sqlite"
+                          latencyMs:
+                            type: number
+                            example: 2
+                      system:
+                        type: object
+                        properties:
+                          memoryHeapUsedMB:
+                            type: number
+                            example: 45.2
+        '503':
+          description: Serviço degradado ou base de dados inacessível.
+
   /auth/login:
     post:
       summary: Iniciar sessão de utilizador (Login)

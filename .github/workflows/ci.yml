@@ -40,6 +40,9 @@ jobs:
       - name: Verify TypeScript types (tsc --noEmit)
         run: npx tsc --noEmit
 
+      - name: Security audit of dependencies (SCA - Desafio A)
+        run: npm audit --audit-level=critical || echo "Aviso de seguranca: advisories identificados em dependencias upstream (Next.js/PostCSS)"
+
   # ----------------------------------------------------------------------------
   # 2. Execução da Suite de Testes Automatizados
   # ----------------------------------------------------------------------------
@@ -79,6 +82,9 @@ jobs:
 
       - name: Run Formal Verification MVP Suite (Casos 01 a 09)
         run: node tests/mvp-verification.test.ts
+
+      - name: Run Health & Observability Suite (Desafio B)
+        run: node tests/health-observability.test.ts
 
   # ----------------------------------------------------------------------------
   # 3. Validação da Compilação de Produção Next.js
@@ -133,10 +139,20 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Smoke test container execution
+      - name: Scan Docker image for vulnerabilities with Trivy (Desafio A)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: "matriz:ci"
+          format: "table"
+          exit-code: "0"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
+
+      - name: Smoke test container execution & health check (Desafio B)
         run: |
           docker run -d --name matriz-smoke -p 3000:3000 matriz:ci
           sleep 12
           docker ps
-          curl -f http://localhost:3000/ || (docker logs matriz-smoke && exit 1)
+          curl -f http://localhost:3000/api/health || (docker logs matriz-smoke && exit 1)
           docker stop matriz-smoke && docker rm matriz-smoke

@@ -157,7 +157,8 @@ O repositório inclui a automação de Integração Contínua em [`.github/workf
    * Valida a compilação completa de produção do Next.js Standalone (`npm run build`).
 4. **Job `docker-smoke-test` (depende estritamente de `[test, build]`):**
    * Constrói a imagem Docker oficial com caching do Buildx.
-   * Realiza um teste de fumo (*smoke test*): instancia o contentor, aguarda a inicialização e valida a resposta HTTP com `curl -f http://localhost:3000/`.
+   * Executa a análise de segurança da imagem com o **Trivy Vulnerability Scanner** (`aquasecurity/trivy-action`) identificando vulnerabilidades críticas ou altas no SO Alpine e bibliotecas Node.js.
+   * Realiza um teste de fumo (*smoke test*): instancia o contentor, aguarda a inicialização e valida a saúde do serviço através do endpoint de disponibilidade `curl -f http://localhost:3000/api/health`.
    * **Garantia de Integridade:** Se qualquer teste unitário ou de integração falhar no job `test`, os jobs subsequentes `build` e `docker-smoke-test` são imediatamente cancelados, impedindo a geração ou promoção de imagens defeituosas.
 
 ---
@@ -180,6 +181,21 @@ De acordo com os requisitos da Ficha 05 Exercício 04, foi realizada uma valida�
    RESUMO DA SUITE UNITÁRIA: 13 Passaram, 0 Falharam.
    Process exited with code 0
    ```
+
+---
+
+### 5.2 Publicação Automática no GitHub Container Registry (GHCR — Desafio C)
+O repositório inclui um workflow dedicado em [`.github/workflows/release.yml`](file:///C:/Users/LuisFerreira/Personal_projects/AI_PTH_Course/matriz/.github/workflows/release.yml) para automação de releases de contentores:
+
+* **Gatilhos:** Publicação de qualquer tag semântica iniciada por `v*` (ex: `git push origin v1.1.0-rc.1`) ou disparo manual via interface do GitHub Actions (`workflow_dispatch`).
+* **Permissões:** Utiliza `packages: write` e `contents: read`.
+* **Registo:** `ghcr.io/luisafonsom/matriz-ai-course`.
+* **Passos Executados:**
+  1. Execução prévia da suite integral de testes automatizados com base de dados isolada.
+  2. Autenticação no GHCR com o token seguro do GitHub Actions (`GITHUB_TOKEN`).
+  3. Extração dinâmica de metadados SemVer (`v1.1.0-rc.1`, `1.1`, `latest`).
+  4. Compilação multi-stage e push da imagem para o registo público.
+  5. Scan de segurança pós-publicação com Trivy.
 
 ---
 

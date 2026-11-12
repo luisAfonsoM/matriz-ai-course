@@ -1,0 +1,117 @@
+name: Release & Publish Container Image (GHCR)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # ----------------------------------------------------------------------------
+  # 1. Verificações de Integridade da Release
+  # ----------------------------------------------------------------------------
+  verify:
+    name: Pre-Release Quality & Tests Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Static typecheck
+        run: npx tsc --noEmit
+
+      - name: Setup test database and seed
+        env:
+          DATABASE_URL: "file:./dev.db"
+          AUTH_SECRET: "matriz-poc-super-secret-key-2026-auth"
+        run: |
+          npx prisma migrate deploy
+          npx tsc prisma/seed.ts --target ES2022 --module NodeNext --moduleResolution NodeNext --outDir prisma/dist
+          node prisma/dist/seed.js
+
+      - name: Run verification test suites
+        env:
+          DATABASE_URL: "file:./dev.db"
+          AUTH_SECRET: "matriz-poc-super-secret-key-2026-auth"
+        run: |
+          node tests/task-title-unit.test.ts
+          node tests/tasks-integration.test.ts
+          node tests/security-idor.test.ts
+          node tests/health-observability.test.ts
+          node tests/mvp-verification.test.ts
+
+  # ----------------------------------------------------------------------------
+  # 2. Construção e Publicação no GitHub Container Registry (GHCR)
+  # ----------------------------------------------------------------------------
+  publish:
+    name: Build & Publish Image to GHCR
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry (ghcr.io)
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata (Tags & Labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=ref,event=tag
+
+      - name: Build and push Docker image to GHCR
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Scan published image with Trivy (Desafio A)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version || 'latest' }}
+          format: "table"
+          exit-code: "0"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"

@@ -25,6 +25,17 @@ e este projeto adere ao [Semantic Versioning (SemVer 2.0.0)](https://semver.org/
   * Configuração de permissões mínimas globais (`permissions: contents: read`).
   * Execução sequencial de 4 etapas: `typecheck` (`npx tsc --noEmit`), `test` (suites automatizadas de teste), `build` (compilação Next.js Standalone) e `docker-smoke-test` (construção da imagem com Buildx e teste de fumo em contentor).
   * Garantia de integridade: a construção da imagem Docker requer aprovação estrita dos testes e do build (`needs: [test, build]`).
+* **Desafio A — Segurança Avançada na Pipeline:**
+  * Integração de auditoria de dependências (SCA) com `npm audit` no job `typecheck`.
+  * Integração do analisador de vulnerabilidades de contentores **Trivy** (`aquasecurity/trivy-action`) no job `docker-smoke-test` e no workflow de release, identificando CVEs na imagem base Alpine e bibliotecas Node.js.
+* **Desafio B — Observabilidade & Disponibilidade:**
+  * Criação do endpoint especializado [`/api/health`](src/app/api/health/route.ts) e [`/api/v1/health`](src/app/api/v1/health/route.ts) com verificação ativa do SQLite (`SELECT 1`), medição de latência em milissegundos, tempo de atividade (`uptime`) e uso de memória.
+  * Criação do utilitário de logs estruturados em JSON ([`src/lib/logger.ts`](src/lib/logger.ts)) para ingestão por sistemas modernos de APM e agregação de logs.
+  * Atualização dos healthchecks no `Dockerfile`, `compose.yaml` e testes de fumo para consultar diretamente `/api/health`.
+  * Adição de suite automatizada de testes de observabilidade ([`tests/health-observability.test.ts`](tests/health-observability.test.ts)).
+* **Desafio C — Publicação de Imagens no GitHub Container Registry (GHCR):**
+  * Criação do workflow dedicado [`.github/workflows/release.yml`](.github/workflows/release.yml) para compilação e publicação automática de imagens no GHCR (`ghcr.io/luisafonsom/matriz-ai-course`) a partir de tags `v*`.
+  * Configuração de autenticação segura via `GITHUB_TOKEN` com escopo mínimo `packages: write` e extração dinâmica de metadados SemVer com `docker/metadata-action`.
 * **Suites Automatizadas de Teste:**
   * Adição de testes unitários para a regra de negócio do título de tarefa ([`tests/task-title-unit.test.ts`](tests/task-title-unit.test.ts)) cobrindo casos válidos, inválidos e análise de valores-limite (BVA nos limiares 3 e 150 caracteres).
   * Adição de testes de integração de API e persistência SQLite ([`tests/tasks-integration.test.ts`](tests/tasks-integration.test.ts)) com isolamento de dados e teardown determinístico.

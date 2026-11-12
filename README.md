@@ -171,6 +171,7 @@ O projeto Matriz possui uma cobertura de testes rigorosa dividida em 11 suites i
 | **Gestão de Tarefas (CRUD)** | Schemas Zod, paginação, filtros combinados e cálculo em tempo de execução de `isOverdue` | 27 | `node tests/tasks-crud.test.ts` |
 | **Gestão de Projetos (CRUD)** | Criação, edição, pesquisa textual por título, paginação e eliminação em cascata | 21 | `node tests/projects-crud.test.ts` |
 | **Autenticação & RBAC** | Hashing bcrypt, emissão e validação de cookie HMAC-SHA256 e barreiras 403 Forbidden | 14 | `node tests/auth-rbac.test.ts` |
+| **Observabilidade & Saúde** | Verificação ativa do SQLite (`SELECT 1`), medição de latência, uptime e logs JSON | 7 | `node tests/health-observability.test.ts` |
 
 ### Comandos Rápidos de Validação:
 
@@ -208,7 +209,29 @@ Pode visualizar e interagir com este contrato importando o ficheiro [`openapi.ya
 
 ---
 
-## 9. Mapa da Documentação Técnica Adicional (`/docs`)
+## 9. Desafios Adicionais de Engenharia Implementados
+
+Para além dos exercícios obrigatórios, o projeto incorpora três extensões opcionais de nível empresarial:
+
+### 🛡️ Desafio A — Segurança Avançada na Pipeline
+* **Software Composition Analysis (SCA):** Auditoria de vulnerabilidades em dependências npm via `npm audit` integrada no job de verificação estática.
+* **Scan de Vulnerabilidades Docker com Trivy:** Integração da action [`aquasecurity/trivy-action`](https://github.com/aquasecurity/trivy-action) nas pipelines de CI e Release, analisando a imagem Alpine Linux contra a base de dados de CVEs conhecidas (`CRITICAL,HIGH`).
+
+### 📊 Desafio B — Observabilidade & Disponibilidade
+* **Endpoint Especializado de Saúde ([`/api/health`](src/app/api/health/route.ts)):** Realiza ping ativo à base de dados SQLite (`SELECT 1`), mede a latência em tempo real, monitoriza tempo de atividade (`uptime`) e consumo de memória RAM (`heapUsedMB`, `rssMB`).
+* **Logger Estruturado em JSON ([`src/lib/logger.ts`](src/lib/logger.ts)):** Formatação canónica de logs para `stdout`/`stderr` com carimbo ISO UTC, nível de severidade e contexto serializável, permitindo ingestão automática em Datadog, ELK ou Docker Logs.
+* **Healthchecks em Contentores:** Tanto o [`Dockerfile`](Dockerfile) como o [`compose.yaml`](compose.yaml) e os testes de fumo do CI validam ativamente o endpoint `/api/health`.
+
+### 🚀 Desafio C — Publicação Automática no GitHub Container Registry (GHCR)
+* **Workflow de Release ([`.github/workflows/release.yml`](.github/workflows/release.yml)):**
+  - Disparado automaticamente na criação de tags semânticas de versão (`v*`) ou manualmente via `workflow_dispatch`.
+  - Permissões mínimas de segurança (`contents: read`, `packages: write`).
+  - Autenticação nativa e segura com `GITHUB_TOKEN` para publicação direta em `ghcr.io/luisafonsom/matriz-ai-course`.
+  - Extração de tags SemVer (`1.1.0-rc.1`, `v1.1`, `latest`) com caching acelerado pelo GitHub Actions.
+
+---
+
+## 10. Mapa da Documentação Técnica Adicional (`/docs`)
 
 O repositório disponibiliza um conjunto completo de especificações e relatórios técnicos:
 
@@ -226,7 +249,7 @@ O repositório disponibiliza um conjunto completo de especificações e relatór
 
 ---
 
-## 10. Licença e Autoria
+## 11. Licença e Autoria
 
 Este projeto foi desenvolvido como parte prática do curso de **Engenharia de Software com Inteligência Artificial / Agentic Software Development**.
 Distribuído sob licença MIT. Consulte o ficheiro de licença para mais detalhes.
