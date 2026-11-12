@@ -1,3 +1,5 @@
+name: matriz
+
 services:
   app:
     build:
@@ -7,21 +9,29 @@ services:
     container_name: matriz-app
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:3000"
     environment:
-      - DATABASE_URL=file:/app/prisma/dev.db
-      - AUTH_SECRET=matriz-poc-super-secret-key-2026-auth
-      - NODE_ENV=production
-      - PORT=3000
+      - DATABASE_URL=${DATABASE_URL:-file:/app/prisma/dev.db}
+      - AUTH_SECRET=${AUTH_SECRET:-matriz-poc-super-secret-key-2026-auth}
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=${PORT:-3000}
     volumes:
       - matriz_sqlite_data:/app/prisma
+    networks:
+      - matriz_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/"]
-      interval: 30s
+      interval: 20s
       timeout: 5s
       retries: 3
       start_period: 15s
 
+networks:
+  matriz_network:
+    driver: bridge
+    name: matriz_network
+
 volumes:
   matriz_sqlite_data:
     driver: local
+    name: matriz_sqlite_data
