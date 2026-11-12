@@ -1,238 +1,232 @@
 # Matriz — Plataforma de Gestão de Projetos e Acompanhamento de Equipas
 
-[![Course](https://img.shields.io/badge/Curso-Agentic%20Software%20Development-blue.svg)](https://github.com)
-[![Status](https://img.shields.io/badge/Status-Ficha%203%20Conclu%C3%ADda%20(MVP%20Entregue)-success.svg)](docs/verification.md)
-[![Paradigma](https://img.shields.io/badge/Paradigma-Agentic%20Approach-purple.svg)](README.md)
+[![Version](https://img.shields.io/badge/Versão-v1.1.0--rc.1%20(Release%20Candidate)-orange.svg)](docs/release-notes-v1.1.0-rc.1.md)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%20Passing-success.svg)](.github/workflows/ci.yml)
+[![Docker](https://img.shields.io/badge/Docker%20Compose-Ready%20(Healthy)-2496ED.svg)](compose.yaml)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1.0-green.svg)](openapi.yaml)
+[![Course](https://img.shields.io/badge/Curso-Agentic%20Software%20Development-blue.svg)](README.md)
 
-**Matriz** é uma aplicação web colaborativa desenvolvida de raiz para capacitar equipas a organizar os seus projetos, gerir tarefas de forma ágil e acompanhar o progresso das entregas com métricas em tempo real.
+**Matriz** é uma aplicação web colaborativa desenvolvida para capacitar equipas a estruturar os seus projetos, gerir tarefas de forma ágil através de quadros Kanban interativos e acompanhar o progresso das entregas com métricas e indicadores de velocidade em tempo real.
 
-O projeto serve como Prova de Conceito (PoC) prática no contexto do curso sobre **Desenvolvimento de Software com Abordagem Agêntica (*Agentic Approach*)**, demonstrando como agentes autónomos de IA e engenheiros humanos colaboram desde a elicitação de requisitos até à implementação e teste do software.
-
----
-
-## 1. Problema que Pretende Resolver
-
-Em muitas organizações e equipas técnicas, a informação sobre o trabalho encontra-se fragmentada em múltiplas ferramentas, emails ou folhas de cálculo. Esta dispersão resulta em:
-* **Falta de clareza sobre responsabilidades:** Dificuldade em saber quem está a executar cada tarefa e quais os prazos acordados.
-* **Invisibilidade do fluxo operacional:** Ausência de uma visão dinâmica que mostre onde estão os estrangulamentos ou bloqueios no ciclo de vida das tarefas.
-* **Deteção tardia de atrasos:** Apenas no final do prazo é que a liderança descobre que uma entrega crítica está atrasada.
-* **Falta de métricas simples e objetivas:** Dificuldade em avaliar a cadência e velocidade real da equipa sem burocracia excessiva.
-
-O **Matriz** resolve estes desafios oferecendo uma interface centralizada, visualmente intuitiva e focada na simplicidade de utilização.
+O projeto foi construído utilizando o paradigma do **Desenvolvimento Assistido por Agentes de IA (*Agentic Approach*)**, integrando especificações rigorosas, validações defensivas ponta a ponta, controlo de acessos por papéis (RBAC), contentorização multi-stage com **Docker & Docker Compose** e esteiras de automação de qualidade via **GitHub Actions**.
 
 ---
 
-## 2. Objetivos Principais
+## 1. Funcionalidades da Aplicação
 
-1. **Gestão Estruturada de Projetos:** Permitir que gestores criem e configurem projetos com objetivos e prazos definidos.
-2. **Organização Visual com Quadro Kanban:** Proporcionar uma visão clara das tarefas divididas em três colunas essenciais: *A Fazer*, *Em Progresso* e *Concluído*.
-3. **Acompanhamento Ativo de Prazos e Atrasos:** Identificar e sinalizar automaticamente qualquer tarefa cujo prazo expirou sem estar concluída.
-4. **Métricas de Progresso e Velocidade:** Disponibilizar um dashboard com indicadores percentuais de conclusão e gráficos de produtividade dos últimos 7 dias.
-5. **Context Engineering e Arquitetura Agêntica:** Estabelecer contratos de dados, especificações e documentação rigorosa para orientar o desenvolvimento com agentes de IA.
-
----
-
-## 3. Funcionalidades Previstas para o MVP
-
-O âmbito do **Minimum Viable Product (MVP)** foi rigorosamente definido para garantir uma entrega rápida, funcional e demonstrável:
-
-| Módulo | Funcionalidades Incluídas no MVP |
+| Módulo | Funcionalidades Principais |
 |---|---|
-| **Projetos** | Criação, edição, listagem e encerramento de projetos com data prevista de entrega. |
-| **Tarefas** | Registo de tarefas com título, descrição, prioridade (Baixa, Média, Alta), data limite e membro atribuído. |
-| **Quadro Kanban** | Visualização interativa em 3 colunas (`TODO`, `IN_PROGRESS`, `DONE`) com movimentação fluida de cartões. |
-| **Deteção de Atrasos** | Destaque visual automático (vermelho + contador de dias) para tarefas que ultrapassaram a data limite. |
-| **Dashboard de Métricas** | Barra percentual de conclusão do projeto, distribuição de tarefas por estado e gráfico de velocidade semanal. |
-| **Perfis e Acessos** | Suporte para dois perfis operacionais: **Gestor de Projeto** e **Membro de Equipa**. |
+| **Gestão de Projetos** | Criação, edição, listagem com paginação e pesquisa textual instantânea, acompanhamento de datas de início/fim e eliminação em cascata com diálogo de segurança. |
+| **Quadro Kanban Interativo** | Visualização em 3 colunas (`TODO`, `IN_PROGRESS`, `DONE`) com movimentação fluida de cartões via drag-and-drop (`@hello-pangea/dnd`) e atualização otimista na interface. |
+| **Múltiplos Responsáveis (N:M)** | Associação de múltiplos colaboradores à mesma tarefa com restrição relacional de unicidade (`@@unique([taskId, userId])`), impedindo duplicações acidentais. |
+| **Comentários Colaborativos** | Registo cronológico de comentários em cada tarefa, com inferência estrita de autor e data no backend a partir da sessão ativa. |
+| **Deteção Inteligente de Atrasos** | Destaque visual automático e badge contextual para qualquer tarefa cuja data limite tenha expirado em formato UTC (`isOverdue`). |
+| **Dashboard Analítico** | Barra de progresso percentual ponderada, distribuição de tarefas por estado, listagem de tarefas críticas e gráfico de velocidade semanal (`recharts`). |
+| **Autenticação & RBAC** | Sessões seguras baseadas em cookies HTTP-only assinados com HMAC-SHA256, senhas em hash `bcryptjs`, proteção contra IDOR e distinção estrita de perfis (**Gestor de Projeto** vs **Membro de Equipa**). |
 
 ---
 
-## 4. Organização da Documentação (`/docs`)
-
-Para apoiar a continuidade do desenvolvimento pelas equipas e pelos agentes de IA nas próximas aulas, a documentação está organizada de forma modular:
-
-* 📄 **[docs/requirements.md](docs/requirements.md):**  
-  Especificação completa dos requisitos funcionais (RF01 a RF12), requisitos não funcionais (desempenho, confiabilidade, arquitetura agêntica), tipos de utilizadores e fronteiras do MVP.
-* 📋 **[docs/user-stories.md](docs/user-stories.md):**  
-  Backlog inicial composto por 6 User Stories no formato canónico (*Como / Quero / Para*), com prioridades MoSCoW, estimativas em Story Points, critérios de aceitação em BDD (*Given / When / Then*) e tratamento de 4 casos-limite (*Edge Cases*).
-* 🛡️ **[docs/constraints.md](docs/constraints.md):**  
-  Registo das restrições conhecidas (tempo, portabilidade local), pressupostos assumidos (mono-tenant, auth simplificada), requisitos de segurança (RBAC, validação de inputs) e decisões técnicas em aberto.
-* 🏛️ **[docs/architecture.md](docs/architecture.md):**  
-  Decisão e justificação arquitetural (Monólito Modular), decomposição em camadas e módulos de domínio, padrões de fluxo de dados e diretrizes para desenvolvimento agêntico.
-* 🗄️ **[docs/database.md](docs/database.md):**  
-  Modelo de dados relacional, diagrama Entidade-Relacionamento (ER em Mermaid), dicionário de atributos, cardinalidades, integridade referencial (`SET NULL` / `CASCADE`) e regras de validação.
-* 📜 **[openapi.yaml](openapi.yaml):**  
-  Especificação OpenAPI 3.1 dos contratos da API REST (operações de criação de tarefas e transição de estado no Kanban, schemas de validação e códigos de resposta).
-* 🖥️ **[docs/ui/dashboard-wireframe.md](docs/ui/dashboard-wireframe.md):**  
-  Prototipagem de interface com wireframe do Dashboard analítico ([formato vetorial SVG](docs/ui/dashboard-wireframe.svg) e ASCII), navegação, KPIs, gráfico de velocidade e tratamento de estados vazios.
-* 📋 **[docs/implementation-plan.md](docs/implementation-plan.md):**  
-  Plano executável de implementação incremental (7 incrementos), regras de acesso RBAC consolidadas, stack confirmada, ficheiros previstos, critérios de aceitação BDD e métodos de verificação.
-* 🧪 **[docs/verification.md](docs/verification.md):**  
-  Relatório formal de verificação do MVP com matriz de testes para os 9 cenários essenciais (Casos 01 a 09), 151 asserções automatizadas validadas, evidências detalhadas e distinção rigorosa entre testes manuais e automatizados.
-* 🤖 **[AGENTS.md](AGENTS.md):**  
-  Instruções persistentes e regras de conduta técnica para agentes de IA de codificação (leitura prévia de contexto, planeamento prévio, controlo de escopo e prevenção de ações destrutivas).
-
----
-
-## 5. Estado Atual do Projeto
-
-O projeto encontra-se atualmente no final da fase de **Context Engineering e Especificação**:
+## 2. Tecnologias Utilizadas
 
 ```mermaid
 flowchart LR
-    E1["Ficha 1<br/>Requisitos & Stories"] -->|Concluído| E2["Ficha 2<br/>Architecture Pack"]
-    E2 -->|Concluído| E3["Ficha 3 - Ex 1 & 2<br/>Plano & Persistência"]
-    E3 -->|Concluído| E4["Ficha 3 - Ex 3<br/>Auth, Sessão & RBAC"]
-    E4 -->|Concluído| E5["Ficha 3 - Ex 4<br/>Gestão de Projetos"]
-    E5 -->|Concluído| E6["Ficha 3 - Ex 5<br/>Gestão de Tarefas"]
-    E6 -->|Concluído| E7["Ficha 3 - Ex 6<br/>Responsáveis & Comentários"]
-    E7 -->|Concluído| E8["Ficha 3 - Ex 7<br/>Frontend & Métricas"]
-    E8 -->|Concluído| E9["Ficha 3 - Ex 8<br/>Verificação do MVP"]
-    E9 -->|Concluído| E10["Ficha 3 - Ex 9<br/>Revisão & Entrega"]
-    E10 -->|Aprovado| Ready["MVP Entregue & Totalmente Auditado"]
+    Frontend["Frontend & UI<br/>Next.js 14 (App Router)<br/>React 18 & Tailwind CSS<br/>Lucide React & Recharts"]
+    Backend["Backend & Regras<br/>Next.js API Routes<br/>Validação Zod<br/>RBAC & Sessão HMAC"]
+    Dados["Persistência & Dados<br/>Prisma ORM<br/>SQLite Relacional (dev.db)<br/>Volume matriz_sqlite_data"]
+    Ops["Entrega & Qualidade<br/>Docker Multi-Stage<br/>Docker Compose v2<br/>GitHub Actions CI"]
 
-    classDef done fill:#22c55e,stroke:#15803d,color:#fff;
-    classDef current fill:#3b82f6,stroke:#1d4ed8,color:#fff;
-
-    class E1,E2,E3,E4,E5,E6,E7,E8,E9,E10 done;
-    class Ready current;
+    Frontend <--> Backend
+    Backend <--> Dados
+    Ops -.->|Orquestra & Valida| Frontend & Backend & Dados
 ```
 
-* ✅ **Ficha Prática 1:** Elicitação de requisitos, User Stories em BDD, casos-limite, restrições e diretrizes em `AGENTS.md`.
-* ✅ **Ficha Prática 2:** Definição da arquitetura de Monólito Modular, modelo ER relacional, contrato OpenAPI 3.1 e wireframe do Dashboard.
-* ✅ **Ficha Prática 3 — Exercício 1 & 2:** Plano de implementação executável, setup do Next.js 14, base de dados SQLite com Prisma e seed idempotente.
-* ✅ **Ficha Prática 3 — Exercício 3:** Autenticação segura com palavras-passe em hash (`bcryptjs`), tokens de sessão HMAC-SHA256 em cookies HTTP-only, inferência estrita de identidade no backend e autorização RBAC para Gestores e Membros.
-* ✅ **Ficha Prática 3 — Exercício 4:** Gestão integrada de projetos (CRUD completo, pesquisa por título, paginação, validação de limites de texto de 3-100 / até 1000 caracteres, eliminação em cascata com diálogo de confirmação prévia e persistência real no SQLite).
-* ✅ **Ficha Prática 3 — Exercício 5:** Gestão completa de tarefas associadas a projetos (CRUD, filtros combinados por estado e prioridade, paginação, rejeição de títulos com apenas espaços, transição rápida de estados, alertas de atraso `isOverdue` e interface reativa sem reload).
-* ✅ **Ficha Prática 3 — Exercício 6:** Múltiplos responsáveis por tarefa (relação N:M com restrição `@@unique([taskId, userId])` anti-duplicados, seleção de utilizadores elegíveis e remoção individual) e comentários colaborativos (1-2000 caracteres, rejeição de apenas espaços, inferência estrita de autor/data no backend, modal interativo e garantia de persistência total na reabertura de tarefas).
-* ✅ **Ficha Prática 3 — Exercício 7:** Frontend completo da Matriz coerente com o wireframe da Aula 2 (Painel Inicial com KPIs, velocidade semanal e tarefas críticas, gestão de projetos com pesquisa e detalhe, tarefas com filtros e múltiplos responsáveis, comentários integrados, mock switcher e sincronização reativa sem recarregamento).
-* ✅ **Ficha Prática 3 — Exercício 8:** Verificação formal do MVP com relatório em `docs/verification.md` cobrindo os 9 cenários do guião, 3 testes automatizados específicos (validação defensiva, autorização RBAC e persistência durável pós-reabertura) e 151 asserções automatizadas aprovadas com 0 falhas.
-* ✅ **Ficha Prática 3 — Exercício 9:** Revisão detalhada de critérios e diff, oportunidade de refatoração aplicada em isolamento (`createErrorResponse` padronizado e defensividade em `computeIsOverdue`), sincronização do contrato OpenAPI 3.1, atualização de `AGENTS.md` e `README.md`, registo de 3 exemplos de uso da IA (incluindo sugestão rejeitada/corrigida) e versionamento semântico em Git.
-* 🎯 **Estado Final:** MVP 100% concluído, verificado e pronto para entrega.
+* **Frontend:** [Next.js 14.2](https://nextjs.org/) (App Router, Server & Client Components), [React 18](https://react.dev/), [Tailwind CSS 3.4](https://tailwindcss.com/), [Lucide React](https://lucide.dev/), [@hello-pangea/dnd](https://github.com/hello-pangea/dnd) e [Recharts 2.13](https://recharts.org/).
+* **Backend:** Next.js Route Handlers (REST), [Zod 3.23](https://zod.dev/) para validação de esquemas e [bcryptjs](https://github.com/dcodeIO/bcrypt.js) para hashing criptográfico.
+* **Base de Dados & ORM:** [Prisma ORM 5.21](https://www.prisma.io/) com **SQLite** relacional local (`prisma/dev.db`), garantindo portabilidade sem necessidade de servidores de base de dados externos.
+* **Testes & QA:** Test Runner nativo do Node.js (`node:assert/strict`) e [Playwright 1.65](https://playwright.dev/) para testes End-to-End no navegador.
+* **Contentorização & Orquestração:** [Docker](https://www.docker.com/) (imagem multi-stage baseada em Alpine Linux) e **Docker Compose v2** ([`compose.yaml`](compose.yaml)).
+* **Integração Contínua (CI):** [GitHub Actions](.github/workflows/ci.yml) com análise estática de tipos, execução de testes automatizados, compilação de produção e smoke tests em contentores.
 
 ---
 
-## 6. Autenticação, Ciclo de Sessão e Controlo de Acessos (RBAC)
+## 3. Pré-requisitos do Sistema
 
-A plataforma implementa um mecanismo de segurança em conformidade com as boas práticas de desenvolvimento web:
+Para executar a aplicação no seu ambiente local, é necessário dispor de uma das seguintes configurações:
 
-### Contas de Demonstração (PoC)
-| Utilizador | Email | Palavra-passe | Papel / Permissões |
-|---|---|:---:|---|
-| **Luís Ferreira** | `luis.ferreira@matriz.local` | `password123` | **Gestor de Projeto (`PROJECT_MANAGER`)** — Cria projetos, define prazos de tarefas e elimina entidades. |
-| **Ana Silva** | `ana.silva@matriz.local` | `password123` | **Membro de Equipa (`TEAM_MEMBER`)** — Move estados no Kanban e insere comentários. |
-| **Carlos Ramos** | `carlos.ramos@matriz.local` | `password123` | **Membro de Equipa (`TEAM_MEMBER`)** — Executa tarefas atribuídas. |
+### Opção A: Execução via Docker Compose (Recomendada — Sem dependências locais de runtime)
+* **Docker Engine:** Versão 24.0 ou superior instalada.
+* **Docker Compose:** Versão 2.20 ou superior (incluído no Docker Desktop para Windows/macOS ou pacote `docker-compose-plugin` em Linux).
 
-### Ciclo de Vida da Sessão e Segurança
-1. **Hashing Seguro:** Nenhuma palavra-passe é guardada em texto limpo. Utiliza-se `bcryptjs` com 10 rondas de salt para gerar `passwordHash`.
-2. **Ciclo de Sessão:**
-   * **Início de Sessão (`POST /api/v1/auth/login`):** Valida as credenciais. Emite um cookie HTTP-only `matriz_session` com validade de 24 horas (`Max-Age=86400`, `SameSite=Lax`). Retorna também o token de sessão para clientes de API.
-   * **Consulta de Perfil (`GET /api/v1/auth/me`):** Verifica a integridade da assinatura HMAC do token, garantindo que o utilizador existe na base de dados SQLite.
-   * **Fim de Sessão (`POST /api/v1/auth/logout`):** Invalida a sessão limpando imediatamente o cookie (`Max-Age=0`).
-3. **Inferência de Identidade no Backend (Anti-Spoofing):**
-   * Em `POST /api/v1/projects`, o backend infere `managerId = user.id` a partir da sessão validada, ignorando qualquer ID de dono enviado no corpo do pedido.
-   * Em `POST /api/v1/tasks/{id}/comments`, o backend infere `authorId = user.id`.
-4. **Verificação de Autorização (RBAC):**
-   * Membros de equipa são bloqueados (`403 Forbidden`) ao tentar criar projetos ou alterar `dueDate` de tarefas.
+### Opção B: Execução Local Nativa
+* **Node.js:** Versão 20 LTS (ou versões superiores compatíveis, como Node 22/26).
+* **npm:** Versão 10 ou superior (instalado nativamente com o Node.js).
+* **Git:** Para clonar o repositório.
 
 ---
 
-## 7. Instruções de Instalação e Execução a partir de Cópia Limpa
+## 4. Instruções de Instalação e Configuração
 
-### Pré-requisitos
-* **Node.js:** Versão 20+ LTS ou 22+/26+ instalada.
-* **npm:** Gestor de pacotes standard incluído no Node.js.
-* **SQLite:** Incluído no ecossistema (não necessita de daemons externos ou Docker).
-
-### 1. Configurar Variáveis de Ambiente
-Copie o ficheiro de configuração de exemplo:
+### Passo 1: Clonar o Repositório
 ```bash
-cp .env.example .env
+git clone https://github.com/seu-utilizador/matriz.git
+cd matriz
 ```
-*(Em linha de comandos Windows CMD use `copy .env.example .env`).*  
-O ficheiro `.env` vem pré-configurado com a base de dados relacional SQLite local (`DATABASE_URL="file:./dev.db"`) e chave secreta para assinaturas HMAC de sessão (`SESSION_SECRET`).
 
-### 2. Instalar Dependências
+### Passo 2: Configurar Variáveis de Ambiente
+Copie o ficheiro de exemplo para criar a sua configuração local:
+```bash
+# Em Linux / macOS:
+cp .env.example .env
+
+# Em Windows (PowerShell ou CMD):
+copy .env.example .env
+```
+
+O ficheiro `.env` vem configurado por defeito com valores seguros para desenvolvimento:
+* `DATABASE_URL="file:./dev.db"` (Base de dados SQLite embutida).
+* `AUTH_SECRET="matriz-poc-super-secret-key-2026-auth"` (Chave para assinatura HMAC-SHA256 de cookies).
+* `PORT=3000`.
+
+### Passo 3: Instalação de Dependências (Para Execução Nativa)
 ```bash
 npm install
 ```
 
-### 3. Criar a Base de Dados e Aplicar Migrações
-Gera o esquema relacional no SQLite local (`prisma/dev.db`):
+### Passo 4: Migração da Base de Dados e Dados de Teste
+Gera o esquema relacional SQLite e popula a base de dados com as contas e projetos de demonstração:
 ```bash
 npx prisma migrate dev
-```
-
-### 4. Povoar com Dados de Demonstração (Seed Idempotente)
-Popula a base de dados com as 3 contas de teste, projetos de demonstração, tarefas variadas e comentários:
-```bash
 npm run db:seed
 ```
-> **Nota de Idempotência:** O script utiliza `upsert` com base em chaves primárias e emails, permitindo execuções repetidas sem duplicação de dados.
 
-### 5. Iniciar a Aplicação
+---
 
-#### Em Modo de Desenvolvimento:
+## 5. Comandos de Execução da Aplicação
+
+### 5.1 Execução com Docker Compose (Modo Recomendado)
+A aplicação inclui orquestração com contentorização multi-stage e volume de dados persistente:
+
+```bash
+# 1. Construir a imagem e iniciar o serviço em segundo plano:
+docker compose up -d --build
+# ou via atalho npm: npm run docker:up
+
+# 2. Verificar o estado e a saúde do contentor (healthcheck):
+docker compose ps
+
+# 3. Inspecionar os logs de arranque e pedidos em tempo real:
+docker compose logs -f
+# ou: npm run docker:logs
+
+# 4. Parar a aplicação (preservando os dados no volume):
+docker compose down
+# ou: npm run docker:down
+```
+
+Após o arranque, abra o navegador em **[http://localhost:3000](http://localhost:3000)**.
+
+### 5.2 Execução Local com Node.js
+
+#### Modo de Desenvolvimento:
 ```bash
 npm run dev
 ```
-Abra [http://localhost:3000](http://localhost:3000) no seu navegador. Pode aceder à página de login em [http://localhost:3000/login](http://localhost:3000/login) para entrar com 1 clique usando as credenciais de demonstração.
+Inicia o servidor com hot-reload ativo em [http://localhost:3000](http://localhost:3000).
 
-#### Em Modo de Produção:
+#### Modo de Produção:
 ```bash
 npm run build
 npm run start
 ```
-A compilação otimiza os assets e o servidor de produção arranca na porta 3000 com saída de telemetria estática.
-
-#### Em Contentor Docker com Docker Compose (Recomendado):
-A plataforma dispõe de contentorização multi-stage e persistência relacional SQLite:
-```bash
-# 1. Construir e iniciar o contentor em background
-docker compose up -d --build
-# ou: npm run docker:up
-
-# 2. Inspecionar estado e registos do contentor
-docker compose ps
-docker compose logs -f
-
-# 3. Parar o serviço
-docker compose down
-```
-Aceda à aplicação em [http://localhost:3000](http://localhost:3000). O contentor executa automaticamente as migrações e o seed de dados de demonstração. Consulte o [Manual de Deployment](docs/deployment.md) para detalhes completos de operações.
+Compila os artefactos otimizados para produção e arranca o servidor standalone na porta 3000.
 
 ---
 
-## 8. Execução dos Testes Automatizados
+## 6. Contas de Demonstração (PoC)
 
-Todas as suites de testes utilizam a execução nativa TypeScript via Node.js e Playwright para o fluxo End-to-End:
+A aplicação inclui três contas pré-configuradas para demonstração e validação do Controlo de Acessos Baseado em Papéis (RBAC):
 
-| Suite | Âmbito / Módulo Testado | Asserções | Comando de Execução |
+| Perfil de Acesso | Utilizador (Email) | Palavra-passe | Capacidades e Permissões |
 |---|---|:---:|---|
-| **End-to-End (Playwright)** | Fluxo completo do utilizador na interface (Login $\to$ Tarefas $\to$ Criação $\to$ Listagem) | 1 E2E | `npm run test:e2e` |
-| **Segurança & Regressão IDOR** | Prevenção de bypass X-User-Id, bloqueio de IDOR na desassociação e RBAC | 21 | `node tests/security-idor.test.ts` |
-| **Integração de Tarefas & API** | Criação, consulta por ID, persistência SQLite e 5 cenários negativos com teardown | 33 | `node tests/tasks-integration.test.ts` |
-| **Validação Unitária de Título** | Casos válidos, inválidos e análise de valores-limite (BVA nos limiares 3 e 150) | 13 | `node tests/task-title-unit.test.ts` |
-| **Verificação Formal MVP** | Validação, RBAC, anti-spoofing, persistência durável pós-reabertura (Casos 01 a 09) | 34 | `node tests/mvp-verification.test.ts` |
-| **Integração Frontend & Métricas** | Agregação analítica, KPIs, percentagem, velocidade semanal e cliente API | 15 | `node tests/frontend-integration.test.ts` |
-| **Comentários de Tarefas** | Threads de comentários, ordenação cronológica, inferência de autor e persistência | 28 | `node tests/task-comments.test.ts` |
-| **Múltiplos Responsáveis (N:M)** | Atribuição N:M, seleção elegível, remoção e restrição única `P2002` anti-duplicados | 12 | `node tests/task-assignees.test.ts` |
-| **Gestão de Tarefas (CRUD)** | Schemas Zod, filtros combinados, paginação e cálculo de atraso `isOverdue` | 27 | `node tests/tasks-crud.test.ts` |
-| **Gestão de Projetos (CRUD)** | Criação, edição, pesquisa por título, paginação e eliminação em cascata | 21 | `node tests/projects-crud.test.ts` |
-| **Autenticação & RBAC** | Hashing bcrypt, emissão e validação de cookie HMAC-SHA256 e barreiras 403 | 14 | `node tests/auth-rbac.test.ts` |
+| **Gestor de Projeto** | `luis.ferreira@matriz.local` | `password123` | **Acesso Total:** Criação/edição/eliminação de projetos, definição de prazos de entrega em tarefas e eliminação de cartões. |
+| **Membro de Equipa** | `ana.silva@matriz.local` | `password123` | Movimentação de tarefas no Kanban, alteração de estado, inserção de comentários e desassociação das suas próprias tarefas. |
+| **Membro de Equipa** | `carlos.ramos@matriz.local` | `password123` | Execução operacional de tarefas, colaboração em equipa e comentários. |
 
-**Comando para executar a suite principal de verificação ponta a ponta:**
-```bash
-node tests/mvp-verification.test.ts
-```
+---
 
-**Comando para executar o teste End-to-End com Playwright:**
-```bash
-npm run test:e2e
-```
+## 7. Instruções para Executar os Testes Automatizados
 
-**Para inspecionar visualmente os registos da base de dados:**
-```bash
-npx prisma studio
-```
-*(Inicia uma interface gráfica no browser em `http://localhost:5555`).*
+O projeto Matriz possui uma cobertura de testes rigorosa dividida em 11 suites independentes e reprodutíveis:
+
+| Suite de Testes | Âmbito & Módulo Testado | Asserções | Comando de Execução |
+|---|---|:---:|---|
+| **End-to-End (Playwright)** | Fluxo completo do utilizador no browser (Login $\to$ Projeto $\to$ Criar Tarefa $\to$ Listagem) | 1 E2E | `npm run test:e2e` |
+| **Validação Unitária de Título** | Casos válidos, higienização `trim()`, inválidos e BVA nos limiares 3 e 150 caracteres | 13 | `node tests/task-title-unit.test.ts` |
+| **Integração de Tarefas & API** | Criação, consulta por ID, persistência SQLite e 5 cenários negativos com isolamento | 33 | `node tests/tasks-integration.test.ts` |
+| **Segurança & Regressão IDOR** | Bloqueio de bypass via `X-User-Id`, mitigação de IDOR na desassociação e barreiras 403 | 21 | `node tests/security-idor.test.ts` |
+| **Verificação Formal do MVP** | Validação, RBAC, anti-spoofing e persistência durável pós-reabertura (Casos 01 a 09) | 34 | `node tests/mvp-verification.test.ts` |
+| **Integração Frontend & Métricas** | Agregação analítica, cálculo de percentagem, velocidade semanal e cliente API | 15 | `node tests/frontend-integration.test.ts` |
+| **Comentários de Tarefas** | Threads cronológicas, inferência de autor por sessão e persistência relacional | 28 | `node tests/task-comments.test.ts` |
+| **Múltiplos Responsáveis (N:M)** | Associação N:M, seleção elegível, remoção e restrição única `P2002` anti-duplicados | 12 | `node tests/task-assignees.test.ts` |
+| **Gestão de Tarefas (CRUD)** | Schemas Zod, paginação, filtros combinados e cálculo em tempo de execução de `isOverdue` | 27 | `node tests/tasks-crud.test.ts` |
+| **Gestão de Projetos (CRUD)** | Criação, edição, pesquisa textual por título, paginação e eliminação em cascata | 21 | `node tests/projects-crud.test.ts` |
+| **Autenticação & RBAC** | Hashing bcrypt, emissão e validação de cookie HMAC-SHA256 e barreiras 403 Forbidden | 14 | `node tests/auth-rbac.test.ts` |
+
+### Comandos Rápidos de Validação:
+
+* **Para executar a suite formal principal:**
+  ```bash
+  node tests/mvp-verification.test.ts
+  ```
+* **Para executar o teste E2E com Playwright:**
+  ```bash
+  npm run test:e2e
+  ```
+* **Para verificar a tipagem estática do projeto:**
+  ```bash
+  npx tsc --noEmit
+  ```
+* **Para inspecionar visualmente a base de dados SQLite:**
+  ```bash
+  npx prisma studio
+  ```
+  *(Abre a interface web do Prisma Studio em `http://localhost:5555`).*
+
+---
+
+## 8. Documentação da API REST (OpenAPI 3.1)
+
+A API REST do Matriz está documentada formalmente de acordo com o padrão **OpenAPI 3.1.0** no ficheiro [`openapi.yaml`](openapi.yaml).
+
+O contrato especifica detalhadamente:
+* Todos os endpoints de **Autenticação**, **Projetos**, **Tarefas** e **Métricas**.
+* Esquemas de pedidos (*request bodies*), respostas de sucesso e respostas padronizadas de erro (`400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`).
+* Parâmetros de consulta (pesquisa, paginação, filtros de estado e prioridade).
+* Mecanismos de segurança via cookie HTTP-only `matriz_session`.
+
+Pode visualizar e interagir com este contrato importando o ficheiro [`openapi.yaml`](openapi.yaml) no [Swagger Editor](https://editor.swagger.io/) ou no [Postman](https://www.postman.com/).
+
+---
+
+## 9. Mapa da Documentação Técnica Adicional (`/docs`)
+
+O repositório disponibiliza um conjunto completo de especificações e relatórios técnicos:
+
+* 🏛️ **[docs/architecture.md](docs/architecture.md):** Arquitetura do sistema, diagrama Mermaid expandido, módulos de domínio, persistência e camada operacional.
+* 🚀 **[docs/deployment.md](docs/deployment.md):** Manual técnico de deployment com Docker, Docker Compose, volume persistente, healthchecks e troubleshooting.
+* 📦 **[docs/release-notes-v1.1.0-rc.1.md](docs/release-notes-v1.1.0-rc.1.md):** Notas de lançamento detalhadas da Release Candidate `v1.1.0-rc.1`.
+* 📝 **[CHANGELOG.md](CHANGELOG.md):** Histórico estruturado de alterações de acordo com o padrão *Keep a Changelog*.
+* 🧪 **[docs/test-plan.md](docs/test-plan.md):** Plano de testes abrangendo cenários unitários, integração de API, testes E2E e testes de segurança.
+* 🛡️ **[docs/quality-security-review.md](docs/quality-security-review.md):** Relatório de auditoria de segurança (revisão de código, análise estática e mitigação de vulnerabilidades IDOR).
+* 📋 **[docs/requirements.md](docs/requirements.md):** Especificação integral dos requisitos funcionais (RF01 a RF12) e não funcionais (RNF01 a RNF06).
+* 📖 **[docs/user-stories.md](docs/user-stories.md):** User Stories do MVP com critérios de aceitação em formato BDD (*Given/When/Then*).
+* 🔒 **[docs/constraints.md](docs/constraints.md):** Restrições técnicas, pressupostos aprovados e decisões arquiteturais.
+* 🗄️ **[docs/database.md](docs/database.md):** Dicionário de dados, modelo relacional e integridade referencial.
+* 🤖 **[AGENTS.md](AGENTS.md):** Regras de conduta, diretrizes de persistência e comandos operacionais para agentes de IA de codificação.
+
+---
+
+## 10. Licença e Autoria
+
+Este projeto foi desenvolvido como parte prática do curso de **Engenharia de Software com Inteligência Artificial / Agentic Software Development**.
+Distribuído sob licença MIT. Consulte o ficheiro de licença para mais detalhes.

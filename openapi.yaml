@@ -5,7 +5,7 @@ info:
     Especificação formal dos contratos da API REST do projeto Matriz (PoC/MVP).
     Esta API implementa o modelo arquitetural de Monólito Modular, permitindo
     a gestão de projetos, tarefas em quadro Kanban e cálculo de métricas de progresso.
-  version: 1.0.0
+  version: 1.1.0-rc.1
   contact:
     name: Equipa de Engenharia Matriz
     email: dev@matriz.local
