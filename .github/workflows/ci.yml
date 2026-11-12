@@ -150,8 +150,8 @@ jobs:
 
       - name: Smoke test container execution & health check (Desafio B)
         run: |
-          docker run -d --name matriz-smoke -p 3000:3000 matriz:ci
-          sleep 12
+          docker run -d --name matriz-smoke -p 3000:3000 -e DATABASE_URL="file:/app/prisma/dev.db" -e AUTH_SECRET="matriz-poc-super-secret-key-2026-auth" matriz:ci
+          sleep 15
           docker ps
           curl -f http://localhost:3000/api/health || (docker logs matriz-smoke && exit 1)
           docker stop matriz-smoke && docker rm matriz-smoke
