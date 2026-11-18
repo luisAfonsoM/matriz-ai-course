@@ -1,6 +1,7 @@
 # Matriz — Plataforma de Gestão de Projetos e Acompanhamento de Equipas
 
 [![Version](https://img.shields.io/badge/Versão-v1.1.0--rc.1%20(Release%20Candidate)-orange.svg)](docs/release-notes-v1.1.0-rc.1.md)
+[![Apresentação](https://img.shields.io/badge/Apresentação-HTML%20Slides-blueviolet.svg)](docs/presentation.html)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%20Passing-success.svg)](.github/workflows/ci.yml)
 [![Docker](https://img.shields.io/badge/Docker%20Compose-Ready%20(Healthy)-2496ED.svg)](compose.yaml)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1.0-green.svg)](openapi.yaml)
@@ -235,6 +236,7 @@ Para além dos exercícios obrigatórios, o projeto incorpora três extensões o
 
 O repositório disponibiliza um conjunto completo de especificações e relatórios técnicos:
 
+* 📽️ **[docs/presentation.html](docs/presentation.html):** Slides interativos em HTML (100% offline, modo ecrã total e notas de orador) preparados para a apresentação presencial final do projeto.
 * 🏛️ **[docs/architecture.md](docs/architecture.md):** Arquitetura do sistema, diagrama Mermaid expandido, módulos de domínio, persistência e camada operacional.
 * 🚀 **[docs/deployment.md](docs/deployment.md):** Manual técnico de deployment com Docker, Docker Compose, volume persistente, healthchecks e troubleshooting.
 * 📦 **[docs/release-notes-v1.1.0-rc.1.md](docs/release-notes-v1.1.0-rc.1.md):** Notas de lançamento detalhadas da Release Candidate `v1.1.0-rc.1`.
