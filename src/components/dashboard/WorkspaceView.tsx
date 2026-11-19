@@ -157,14 +157,36 @@ export function WorkspaceView({
                 setActiveProjectId(projId);
                 setActiveTab("PROJECT_DETAIL");
               }}
-              onProjectCreated={refreshWorkspace}
-              onProjectDeleted={refreshWorkspace}
+              onMutation={refreshWorkspace}
             />
           </section>
         )}
 
-        {/* ECRÃ 3: QUADRO KANBAN & CHECKLISTS DE VOO (TAREFAS) */}
-        {(activeTab === "TASKS" || activeTab === "PROJECT_DETAIL") && (
+        {/* ECRÃ 3: DETALHE DA MISSÃO & ITENS DE VOO (TAREFAS ASSOCIADAS) */}
+        {activeTab === "PROJECT_DETAIL" && (
+          <section className="space-y-4">
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-navy-900">
+                Detalhe da Missão & {AVIATION_LABELS.nav.tasks}
+              </h2>
+              <p className="text-xs text-navy-500">
+                Itens de voo da missão selecionada: filtros de estado e prioridade, prazos e registo de telemetria.
+              </p>
+            </div>
+            <TaskManagement
+              projects={projects}
+              activeProjectId={activeProjectId}
+              onProjectChange={setActiveProjectId}
+              currentUser={currentUser}
+              onMutation={refreshWorkspace}
+              onBackToProjects={() => setActiveTab("PROJECTS")}
+              isDetailView={true}
+            />
+          </section>
+        )}
+
+        {/* ECRÃ 4: QUADRO KANBAN & CHECKLISTS DE VOO (TAREFAS) */}
+        {activeTab === "TASKS" && (
           <section className="space-y-4">
             <div>
               <h2 className="text-xl font-bold tracking-tight text-navy-900">
@@ -177,9 +199,9 @@ export function WorkspaceView({
             <TaskManagement
               projects={projects}
               activeProjectId={activeProjectId}
-              onSelectProject={setActiveProjectId}
+              onProjectChange={setActiveProjectId}
               currentUser={currentUser}
-              onTasksUpdated={refreshWorkspace}
+              onMutation={refreshWorkspace}
             />
           </section>
         )}

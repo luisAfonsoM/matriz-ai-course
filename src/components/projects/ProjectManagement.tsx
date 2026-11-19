@@ -14,9 +14,10 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  FolderGit2,
+  Plane,
+  PlaneTakeoff,
   Lock,
-  RefreshCw,
+  Fan,
   ArrowRight,
 } from "lucide-react";
 
@@ -351,13 +352,13 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         {/* Campo de Pesquisa por Nome */}
         <div className="relative flex-1">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-navy-400 absolute left-3.5 top-3" />
           <input
             type="text"
             value={search}
             onChange={handleSearchChange}
-            placeholder="Pesquisar projetos por nome..."
-            className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition"
+            placeholder="Pesquisar missões por código ou nome..."
+            className="w-full pl-9 pr-4 py-2 text-sm bg-navy-50/50 border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white transition text-navy-900 placeholder:text-navy-400"
           />
           {search && (
             <button
@@ -373,10 +374,10 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
         <div className="flex items-center gap-2">
           <button
             onClick={() => fetchProjects(pagination.page, search)}
-            title="Recarregar lista"
-            className="p-2 text-slate-600 hover:text-blue-600 hover:bg-slate-50 border border-slate-200 rounded-lg transition"
+            title="Recarregar missões"
+            className="p-2 text-navy-600 hover:text-aero-600 hover:bg-navy-50 border border-navy-200 rounded-lg transition"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-blue-600" : ""}`} />
+            <Fan className={`w-4 h-4 ${loading ? "animate-turbine-spin text-aero-600" : ""}`} />
           </button>
 
           {isManager ? (
@@ -385,45 +386,45 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
                 setCreateErrors([]);
                 setIsCreateOpen(true);
               }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition whitespace-nowrap"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-aero-600 hover:bg-aero-700 text-white text-sm font-semibold rounded-lg shadow-xs transition duration-150 hover:-translate-y-0.5 active:translate-y-0 whitespace-nowrap motion-reduce:transform-none"
             >
-              <Plus className="w-4 h-4" /> Novo Projeto
+              <Plus className="w-4 h-4" /> Nova Missão
             </button>
           ) : (
             <button
               disabled
-              title="Apenas Gestores de Projeto têm permissão para criar novos projetos"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-400 border border-slate-200 text-sm font-medium rounded-lg cursor-not-allowed whitespace-nowrap"
+              title="Apenas Comandantes têm permissão para criar novas missões"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-navy-100 text-navy-400 border border-navy-200 text-sm font-medium rounded-lg cursor-not-allowed whitespace-nowrap"
             >
-              <Lock className="w-3.5 h-3.5" /> Novo Projeto (Gestor)
+              <Lock className="w-3.5 h-3.5" /> Nova Missão (Comandante)
             </button>
           )}
         </div>
       </div>
 
-      {/* LISTAGEM DE PROJETOS */}
+      {/* LISTAGEM DE MISSÕES */}
       {loading ? (
-        <div className="py-16 text-center text-slate-400 bg-white rounded-xl border border-slate-200">
-          <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-blue-600" />
-          <p className="text-sm">A carregar projetos da base de dados...</p>
+        <div className="py-16 text-center text-navy-400 bg-white rounded-xl border border-navy-200">
+          <Fan className="w-6 h-6 animate-turbine-spin mx-auto mb-2 text-aero-600" />
+          <p className="text-sm">A rastrear missões no radar central...</p>
         </div>
       ) : projects.length === 0 ? (
-        <div className="py-16 text-center bg-white rounded-xl border border-slate-200 p-6">
-          <FolderGit2 className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <h3 className="text-base font-semibold text-slate-800 mb-1">
-            {search ? "Nenhum projeto encontrado" : "Nenhum projeto registado"}
+        <div className="py-16 text-center bg-white rounded-xl border border-navy-200 p-6">
+          <Plane className="w-12 h-12 text-navy-300 mx-auto mb-3 transform -rotate-45" />
+          <h3 className="text-base font-semibold text-navy-900 mb-1">
+            {search ? "Nenhuma missão encontrada no radar" : "Nenhuma missão registada no esquadrão"}
           </h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto mb-4">
+          <p className="text-xs text-navy-500 max-w-sm mx-auto mb-4">
             {search
-              ? `Não foram encontrados resultados para a pesquisa "${search}". Tente outro termo.`
-              : "Ainda não existem projetos criados. Como Gestor de Projeto, pode registar o primeiro projeto da equipa."}
+              ? `Não foram encontrados planos de voo para "${search}". Tente outro termo.`
+              : "Ainda não existem missões ativas. Como Comandante, pode autorizar o primeiro plano de voo."}
           </p>
           {isManager && !search && (
             <button
               onClick={() => setIsCreateOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-aero-600 hover:bg-aero-700 text-white text-xs font-semibold rounded-lg transition"
             >
-              <Plus className="w-4 h-4" /> Registar Primeiro Projeto
+              <Plus className="w-4 h-4" /> Registar Primeira Missão
             </button>
           )}
         </div>
@@ -443,52 +444,52 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
                   <span
                     className={`inline-block px-2 py-0.5 rounded text-[11px] font-semibold whitespace-nowrap ${
                       project.status === "ACTIVE"
-                        ? "bg-blue-50 text-blue-700 border border-blue-200"
+                        ? "bg-aero-50 text-aero-700 border border-aero-200"
                         : project.status === "COMPLETED"
-                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                        : "bg-amber-50 text-amber-700 border border-amber-200"
+                        ? "bg-hud-50 text-hud-700 border border-hud-200"
+                        : "bg-runway-50 text-runway-700 border border-runway-200"
                     }`}
                   >
                     {project.status === "ACTIVE"
-                      ? "Ativo"
+                      ? "Em Rota"
                       : project.status === "COMPLETED"
-                      ? "Concluído"
-                      : "Em Pausa"}
+                      ? "Aterrado"
+                      : "Em Espera"}
                   </span>
                 </div>
 
                 {/* Descrição */}
-                <p className="text-xs text-slate-600 mb-4 line-clamp-2 min-h-[32px]">
-                  {project.description || <span className="italic text-slate-400">Sem descrição detalhada.</span>}
+                <p className="text-xs text-navy-600 mb-4 line-clamp-2 min-h-[32px]">
+                  {project.description || <span className="italic text-navy-400">Sem plano de voo detalhado.</span>}
                 </p>
 
                 {/* Progresso */}
                 <div className="mb-4">
-                  <div className="flex justify-between text-xs text-slate-500 mb-1 font-medium">
-                    <span>Progresso ({project.completedTasks}/{project.totalTasks} tarefas)</span>
-                    <span className="font-bold text-slate-700">{project.progressPercentage}%</span>
+                  <div className="flex justify-between text-xs text-navy-500 mb-1 font-medium">
+                    <span>Progresso ({project.completedTasks}/{project.totalTasks} checklists)</span>
+                    <span className="font-bold text-navy-700">{project.progressPercentage}%</span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                  <div className="w-full bg-navy-100 rounded-full h-2 overflow-hidden">
                     <div
                       className={`h-2 rounded-full transition-all duration-300 ${
-                        project.progressPercentage === 100 ? "bg-emerald-500" : "bg-blue-600"
+                        project.progressPercentage === 100 ? "bg-hud-500" : "bg-aero-600"
                       }`}
                       style={{ width: `${project.progressPercentage}%` }}
                     />
                   </div>
                 </div>
 
-                {/* Metadados: Gestor e Datas */}
-                <div className="space-y-1.5 text-xs text-slate-500 border-t border-slate-100 pt-3">
+                {/* Metadados: Comandante e Datas */}
+                <div className="space-y-1.5 text-xs text-navy-500 border-t border-navy-100 pt-3">
                   <div className="flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Gestor: </span>
-                    <strong className="text-slate-700 font-medium">{project.manager.name}</strong>
+                    <User className="w-3.5 h-3.5 text-navy-400" />
+                    <span>Comandante: </span>
+                    <strong className="text-navy-700 font-medium">{project.manager.name}</strong>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Prazo: </span>
-                    <span className="text-slate-700">
+                    <Calendar className="w-3.5 h-3.5 text-navy-400" />
+                    <span>Plano de Voo: </span>
+                    <span className="text-navy-700">
                       {new Date(project.startDate).toLocaleDateString("pt-PT")} até{" "}
                       {new Date(project.targetDate).toLocaleDateString("pt-PT")}
                     </span>
@@ -497,13 +498,13 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
               </div>
 
               {/* Botões de Ação */}
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+              <div className="mt-4 pt-3 border-t border-navy-100 flex items-center justify-between gap-2">
                 <button
                   onClick={() => onSelectProject && onSelectProject(project.id)}
-                  title="Ver detalhes do projeto e gerir tarefas associadas"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg transition"
+                  title="Ver detalhes da missão e gerir checklists associadas"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 bg-aero-50 hover:bg-aero-100 text-aero-700 rounded-lg transition"
                 >
-                  <span>Ver Detalhe / Tarefas</span>
+                  <span>Ver Missão / Checklists</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
 
@@ -559,25 +560,25 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
         </div>
       )}
 
-      {/* MODAL: CRIAR NOVO PROJETO */}
+      {/* MODAL: CRIAR NOVA MISSÃO */}
       {isCreateOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-navy-200 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-navy-100 mb-4">
               <div className="flex items-center gap-2">
-                <FolderGit2 className="w-5 h-5 text-blue-600" />
-                <h3 className="font-bold text-slate-900 text-base">Novo Projeto</h3>
+                <PlaneTakeoff className="w-5 h-5 text-aero-600" />
+                <h3 className="font-bold text-navy-900 text-base">Nova Missão (Plano de Voo)</h3>
               </div>
               <button
                 onClick={() => setIsCreateOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-navy-400 hover:text-navy-600 p-1"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {createErrors.length > 0 && (
-              <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-700 space-y-1">
+              <div className="mb-4 p-3 bg-storm-50 border border-storm-200 rounded-lg text-xs text-storm-700 space-y-1">
                 {createErrors.map((err, i) => (
                   <p key={i}>• {err}</p>
                 ))}
@@ -586,8 +587,8 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
 
             <form onSubmit={handleCreateSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Título do Projeto * (3 a 100 caracteres)
+                <label className="block font-semibold text-navy-700 uppercase tracking-wider mb-1">
+                  Designação da Missão * (3 a 100 caracteres)
                 </label>
                 <input
                   type="text"
@@ -596,69 +597,70 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
                   maxLength={100}
                   value={createForm.title}
                   onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })}
-                  placeholder="Ex: Plataforma de Telemetria v2"
-                  className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  placeholder="Ex: Operação Radar Atlas v2"
+                  className="w-full px-3 py-2 text-sm bg-navy-50/50 border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white text-navy-900 placeholder:text-navy-400"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Descrição (opcional, até 1000 caracteres)
+                <label className="block font-semibold text-navy-700 uppercase tracking-wider mb-1">
+                  Briefing / Descrição (opcional, até 1000 caracteres)
                 </label>
                 <textarea
                   rows={3}
                   maxLength={1000}
                   value={createForm.description}
                   onChange={(e) => setCreateForm({ ...createForm, description: e.target.value })}
-                  placeholder="Objetivos e escopo do projeto..."
-                  className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  placeholder="Objetivos e parâmetros operacionais da missão..."
+                  className="w-full px-3 py-2 text-sm bg-navy-50/50 border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white text-navy-900 placeholder:text-navy-400"
                 />
-                <p className="text-[10px] text-slate-400 text-right mt-0.5">
+                <p className="text-[10px] text-navy-400 text-right mt-0.5">
                   {createForm.description.length}/1000 caracteres
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                    Data de Início *
+                  <label className="block font-semibold text-navy-700 uppercase tracking-wider mb-1">
+                    Descolagem Prevista *
                   </label>
                   <input
                     type="date"
                     required
                     value={createForm.startDate}
                     onChange={(e) => setCreateForm({ ...createForm, startDate: e.target.value })}
-                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                    className="w-full px-3 py-2 text-sm bg-navy-50/50 border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white text-navy-900"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                    Data Prevista de Conclusão *
+                  <label className="block font-semibold text-navy-700 uppercase tracking-wider mb-1">
+                    Aterragem Prevista *
                   </label>
                   <input
                     type="date"
                     required
                     value={createForm.targetDate}
                     onChange={(e) => setCreateForm({ ...createForm, targetDate: e.target.value })}
-                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                    className="w-full px-3 py-2 text-sm bg-navy-50/50 border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white text-navy-900"
                   />
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+              <div className="pt-4 border-t border-navy-100 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsCreateOpen(false)}
-                  className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition"
+                  className="px-4 py-2 border border-navy-200 rounded-lg text-navy-700 hover:bg-navy-50 transition"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition disabled:opacity-50"
+                  className="px-4 py-2 bg-aero-600 hover:bg-aero-700 text-white font-semibold rounded-lg shadow-sm transition disabled:opacity-50 inline-flex items-center gap-2 group"
                 >
-                  {submitting ? "A criar..." : "Criar Projeto"}
+                  <PlaneTakeoff className="w-4 h-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transform-none" />
+                  {submitting ? "A autorizar..." : "Autorizar Missão"}
                 </button>
               </div>
             </form>
@@ -666,25 +668,25 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
         </div>
       )}
 
-      {/* MODAL: EDITAR PROJETO */}
+      {/* MODAL: EDITAR MISSÃO */}
       {isEditOpen && selectedProject && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-navy-200 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-navy-100 mb-4">
               <div className="flex items-center gap-2">
-                <Pencil className="w-5 h-5 text-blue-600" />
-                <h3 className="font-bold text-slate-900 text-base">Editar Projeto</h3>
+                <Pencil className="w-5 h-5 text-aero-600" />
+                <h3 className="font-bold text-navy-900 text-base">Editar Missão</h3>
               </div>
               <button
                 onClick={() => setIsEditOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-navy-400 hover:text-navy-600 p-1"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {editErrors.length > 0 && (
-              <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-700 space-y-1">
+              <div className="mb-4 p-3 bg-storm-50 border border-storm-200 rounded-lg text-xs text-storm-700 space-y-1">
                 {editErrors.map((err, i) => (
                   <p key={i}>• {err}</p>
                 ))}
@@ -693,8 +695,8 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
 
             <form onSubmit={handleEditSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Título do Projeto * (3 a 100 caracteres)
+                <label className="block font-semibold text-navy-700 uppercase tracking-wider mb-1">
+                  Designação da Missão * (3 a 100 caracteres)
                 </label>
                 <input
                   type="text"
@@ -703,29 +705,29 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
                   maxLength={100}
                   value={editForm.title}
                   onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
-                  className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full px-3 py-2 text-sm bg-navy-50/50 border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white text-navy-900"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Descrição (opcional, até 1000 caracteres)
+                <label className="block font-semibold text-navy-700 uppercase tracking-wider mb-1">
+                  Briefing / Descrição (opcional, até 1000 caracteres)
                 </label>
                 <textarea
                   rows={3}
                   maxLength={1000}
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                  className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full px-3 py-2 text-sm bg-navy-50/50 border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white text-navy-900"
                 />
-                <p className="text-[10px] text-slate-400 text-right mt-0.5">
+                <p className="text-[10px] text-navy-400 text-right mt-0.5">
                   {editForm.description.length}/1000 caracteres
                 </p>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Estado do Projeto
+                <label className="block font-semibold text-navy-700 uppercase tracking-wider mb-1">
+                  Estado Operacional da Missão
                 </label>
                 <select
                   value={editForm.status}
@@ -735,55 +737,55 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
                       status: e.target.value as "ACTIVE" | "COMPLETED" | "ON_HOLD",
                     })
                   }
-                  className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                  className="w-full px-3 py-2 text-sm bg-navy-50/50 border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white text-navy-900"
                 >
-                  <option value="ACTIVE">Ativo (ACTIVE)</option>
-                  <option value="COMPLETED">Concluído (COMPLETED)</option>
-                  <option value="ON_HOLD">Em Pausa (ON_HOLD)</option>
+                  <option value="ACTIVE">Em Operação / Ativa (ACTIVE)</option>
+                  <option value="COMPLETED">Cumprida / Aterrada (COMPLETED)</option>
+                  <option value="ON_HOLD">No Hangar / Em Espera (ON_HOLD)</option>
                 </select>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                    Data de Início
+                  <label className="block font-semibold text-navy-700 uppercase tracking-wider mb-1">
+                    Descolagem Prevista
                   </label>
                   <input
                     type="date"
                     required
                     value={editForm.startDate}
                     onChange={(e) => setEditForm({ ...editForm, startDate: e.target.value })}
-                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                    className="w-full px-3 py-2 text-sm bg-navy-50/50 border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white text-navy-900"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                    Data de Conclusão Prevista
+                  <label className="block font-semibold text-navy-700 uppercase tracking-wider mb-1">
+                    Aterragem Prevista
                   </label>
                   <input
                     type="date"
                     required
                     value={editForm.targetDate}
                     onChange={(e) => setEditForm({ ...editForm, targetDate: e.target.value })}
-                    className="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                    className="w-full px-3 py-2 text-sm bg-navy-50/50 border border-navy-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white text-navy-900"
                   />
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+              <div className="pt-4 border-t border-navy-100 flex items-center justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsEditOpen(false)}
-                  className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 transition"
+                  className="px-4 py-2 border border-navy-200 rounded-lg text-navy-700 hover:bg-navy-50 transition"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition disabled:opacity-50"
+                  className="px-4 py-2 bg-aero-600 hover:bg-aero-700 text-white font-semibold rounded-lg shadow-sm transition disabled:opacity-50"
                 >
-                  {submitting ? "A guardar..." : "Guardar Alterações"}
+                  {submitting ? "A atualizar..." : "Atualizar Missão"}
                 </button>
               </div>
             </form>
@@ -794,26 +796,26 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
       {/* DIÁLOGO MODAL: CONFIRMAÇÃO DE ELIMINAÇÃO (RNF03 / Anti-Órfãos) */}
       {isDeleteOpen && selectedProject && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-rose-200 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-storm-200 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-storm-100 text-storm-600 flex items-center justify-center flex-shrink-0">
                 <AlertTriangle className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-base">Eliminar Projeto</h3>
-                <p className="text-xs text-slate-500">Esta ação é irreversível.</p>
+                <h3 className="font-bold text-navy-900 text-base">Cancelar Missão</h3>
+                <p className="text-xs text-navy-500">Esta ação é irreversível.</p>
               </div>
             </div>
 
-            <p className="text-xs text-slate-700 leading-relaxed mb-4">
-              Tem a certeza de que deseja eliminar o projeto{" "}
-              <strong className="text-slate-900 font-semibold">"{selectedProject.title}"</strong>?
+            <p className="text-xs text-navy-700 leading-relaxed mb-4">
+              Tem a certeza de que deseja cancelar e eliminar a missão{" "}
+              <strong className="text-navy-900 font-semibold">"{selectedProject.title}"</strong>?
             </p>
 
             <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800 mb-5 leading-relaxed">
-              <strong>Regra de Integridade Referencial:</strong> Todas as{" "}
-              <strong>{selectedProject.totalTasks} tarefas</strong> e respetivos comentários dependentes serão
-              eliminados em cascata da base de dados para evitar registos órfãos.
+              <strong>Regra de Integridade Referencial:</strong> Todos os{" "}
+              <strong>{selectedProject.totalTasks} itens de voo</strong> e respetivos relatórios dependentes serão
+              eliminados em cascata da base de dados para evitar registos órfãos no radar.
             </div>
 
             <div className="flex items-center justify-end gap-2">
@@ -821,17 +823,17 @@ export function ProjectManagement({ currentUser, onSelectProject, onMutation }: 
                 type="button"
                 onClick={() => setIsDeleteOpen(false)}
                 disabled={submitting}
-                className="px-4 py-2 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                className="px-4 py-2 border border-navy-200 rounded-lg text-xs font-semibold text-navy-700 hover:bg-navy-50 transition"
               >
-                Cancelar
+                Manter Missão
               </button>
               <button
                 type="button"
                 onClick={handleDeleteConfirm}
                 disabled={submitting}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg shadow-sm transition disabled:opacity-50"
+                className="px-4 py-2 bg-storm-600 hover:bg-storm-700 text-white text-xs font-semibold rounded-lg shadow-sm transition disabled:opacity-50"
               >
-                {submitting ? "A eliminar..." : "Sim, Eliminar Definitivamente"}
+                {submitting ? "A cancelar..." : "Sim, Abortar e Eliminar"}
               </button>
             </div>
           </div>
