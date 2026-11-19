@@ -117,6 +117,35 @@
       background: #10b981;
       box-shadow: 0 0 8px #10b981;
     }
+    .tag.timer {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border-color: rgba(99, 102, 241, 0.4);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+      transition: all 0.2s;
+    }
+    .tag.timer:hover { background: rgba(99, 102, 241, 0.3); }
+    .tag.timer.warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, 0.5);
+    }
+    .tag.timer.danger {
+      background: rgba(244, 63, 94, 0.25);
+      color: #fda4af;
+      border-color: rgba(244, 63, 94, 0.6);
+      animation: pulse-timer 1s infinite;
+    }
+    @keyframes pulse-timer {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(0.97); }
+    }
 
     /* Contentor de Slides */
     main.slider-viewport {
@@ -357,189 +386,210 @@
       <span style="color: var(--text-muted); font-weight: 400;">— Apresentação Final (5 min)</span>
     </div>
     <div class="meta-tags">
+      <span id="timerTag" class="tag timer" onclick="toggleTimer()" title="Cronómetro de 5 minutos (Clique para Iniciar/Pausar • Duplo clique para Reset • Tecla 'T')">
+        ⏱️ <span id="timerText">05:00</span>
+      </span>
       <span class="tag live">Deployed no Render.com</span>
       <span class="tag">Release v1.1.0</span>
       <span class="tag">19 Nov 2026</span>
     </div>
   </header>
 
-  <!-- Contentor dos Slides (Apenas 5 Slides de Alto Impacto) -->
+  <!-- Contentor dos Slides (Alinhado com os 5 Momentos da Ficha Laboratorial) -->
   <main class="slider-viewport">
 
     <!-- ====================================================================
-         SLIDE 1: Capa & Visão Executiva (30 segundos)
+         MOMENTO 1: Enquadramento & Principais Funcionalidades (30 segundos)
          ==================================================================== -->
-    <section class="slide active" data-slide="1" data-notes="[TEMPO: 30s] Boa tarde professor e colegas. Apresento a Matriz, uma plataforma web ágil para gestão de projetos e acompanhamento de equipas. Desenvolvida integralmente com abordagem agêntica com IA, a aplicação está 100% funcional, testada e em produção no Render.com com contentor Docker.">
-      <div style="max-width: 920px; margin: 0 auto; text-align: center;">
+    <section class="slide active" data-slide="1" data-notes="[TEMPO: 30s • MOMENTO 1: ENQUADRAMENTO] Boa tarde professor Vítor Santos e colegas. Apresento a Matriz, uma plataforma ágil de gestão de projetos e acompanhamento de equipas desenvolvida com abordagem agêntica com IA. O objetivo central é capacitar líderes e equipas a estruturar atividades, acompanhar entregas em tempo real através de Kanban interativo e prevenir atrasos operacionais. A aplicação está 100% implementada, testada e em produção no Render.com.">
+      <div style="max-width: 940px; margin: 0 auto; text-align: center;">
         <div class="slide-eyebrow" style="justify-content: center;">
-          <span>PROJETO FINAL • APRESENTAÇÃO EXECUTIVA (5 MINUTOS)</span>
+          <span>MOMENTO 1 • ENQUADRAMENTO & PRINCIPAIS FUNCIONALIDADES (30s)</span>
         </div>
-        <h1 class="slide-title" style="font-size: 3.2rem; margin-bottom: 14px;">
+        <h1 class="slide-title" style="font-size: 3.1rem; margin-bottom: 12px;">
           Plataforma <span class="highlight">Matriz</span>
         </h1>
-        <p style="font-size: 1.2rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 28px; max-width: 780px; margin-left: auto; margin-right: auto;">
-          Gestão Ágil de Projetos, Colaboração de Equipas e Observabilidade construída com <strong>Metodologia Agêntica Rigorosa</strong>.
+        <p style="font-size: 1.15rem; color: #cbd5e1; line-height: 1.5; margin-bottom: 24px; max-width: 800px; margin-left: auto; margin-right: auto;">
+          Gestão Ágil de Projetos, Acompanhamento de Equipas e Prevenção de Atrasos com <strong>Engenharia Agêntica Rigorosa</strong>.
         </p>
 
-        <div style="display: flex; justify-content: center; gap: 14px; margin-bottom: 32px;">
-          <span class="tag" style="padding: 6px 14px; font-size: 0.85rem;">👨‍💻 Formando: <strong>Luís Ferreira</strong></span>
-          <span class="tag live" style="padding: 6px 14px; font-size: 0.85rem;">Deploy Ativo: <strong>Render.com (Docker)</strong></span>
-          <span class="tag" style="padding: 6px 14px; font-size: 0.85rem;">📦 GHCR: <strong>v1.1.0</strong></span>
+        <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 28px; flex-wrap: wrap;">
+          <span class="tag" style="padding: 5px 12px; font-size: 0.82rem;">👨‍💻 Formando: <strong>Luís Ferreira</strong></span>
+          <span class="tag" style="padding: 5px 12px; font-size: 0.82rem;">🎓 Formador: <strong>Prof. Vítor Santos</strong></span>
+          <span class="tag live" style="padding: 5px 12px; font-size: 0.82rem;">Produção: <strong>Render.com (Docker)</strong></span>
+          <span class="tag" style="padding: 5px 12px; font-size: 0.82rem;">📦 GitHub: <strong>luisAfonsoM/matriz-ai-course</strong></span>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: left;">
           <div class="card card-accent-primary" style="padding: 16px;">
-            <span class="code-pill">Âmbito 100% MVP</span>
-            <h4 style="color:#fff; font-size: 0.95rem; margin-top:8px;">Kanban & Métricas</h4>
-            <p style="font-size: 0.82rem;">Drag-and-drop, múltiplos responsáveis (N:M), deteção de atrasos UTC e comentários.</p>
+            <span class="code-pill">Objetivo do Projeto</span>
+            <h4 style="color:#fff; font-size: 0.95rem; margin-top:8px;">Gestão Ágil Integrada</h4>
+            <p style="font-size: 0.82rem;">Estruturar missões, delegar tarefas e dar visibilidade contínua do progresso sem dispersão de contexto.</p>
           </div>
           <div class="card card-accent-cyan" style="padding: 16px;">
-            <span class="code-pill">Engenharia Agêntica</span>
-            <h4 style="color:#fff; font-size: 0.95rem; margin-top:8px;">Governança com IA</h4>
-            <p style="font-size: 0.82rem;">Princípio Plan-First, controlo de escopo com AGENTS.md e BDD formal.</p>
+            <span class="code-pill">Âmbito 100% MVP</span>
+            <h4 style="color:#fff; font-size: 0.95rem; margin-top:8px;">Kanban, N:M & Métricas</h4>
+            <p style="font-size: 0.82rem;">Quadro de 3 colunas, drag-and-drop fluído, múltiplos responsáveis sem duplicados e deteção de atrasos UTC.</p>
           </div>
           <div class="card card-accent-emerald" style="padding: 16px;">
-            <span class="code-pill">3 Desafios Opcionais</span>
-            <h4 style="color:#fff; font-size: 0.95rem; margin-top:8px;">Produção & Operações</h4>
-            <p style="font-size: 0.82rem;">Trivy security scan, /api/health com latência SQLite e releases automáticas GHCR.</p>
+            <span class="code-pill">Engenharia Agêntica</span>
+            <h4 style="color:#fff; font-size: 0.95rem; margin-top:8px;">Governança com IA</h4>
+            <p style="font-size: 0.82rem;">Fidelidade às User Stories com AGENTS.md, validação defensiva e pirâmide de testes automatizada.</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ====================================================================
-         SLIDE 2: Tecnologias & Arquitetura (45 segundos)
+         MOMENTO 2: Tecnologias & Decisões Técnicas (45 segundos)
          ==================================================================== -->
-    <section class="slide" data-slide="2" data-notes="[TEMPO: 45s] A nível de arquitetura escolhemos um Monólito Modular em Next.js 14 App Router com TypeScript estrito. Isto dá-nos o frontend React e a API no mesmo processo, sem problemas de CORS. O Prisma ORM gere o SQLite local com migrações e seed automático, e o empacotamento é feito numa imagem Docker multi-stage de ~250MB que corre em produção no Render.">
-      <div class="slide-eyebrow">01 • ARQUITETURA & TECNOLOGIAS</div>
-      <h2 class="slide-title">Monólito Modular & <span class="highlight">Stack Tecnológica</span></h2>
+    <section class="slide" data-slide="2" data-notes="[TEMPO: 45s • MOMENTO 2: TECNOLOGIAS] Em termos de arquitetura e tecnologia, optámos por um Monólito Modular em Next.js 14 App Router com TypeScript estrito. Esta decisão estratégica permitiu unificar o frontend React e a API REST no mesmo processo, eliminando CORS e unificando contratos de dados. O Prisma ORM gere o SQLite local com migrações automáticas no arranque. Toda a aplicação é empacotada numa imagem Docker multi-stage de ~250MB que corre em produção no Render.com com HTTPS.">
+      <div class="slide-eyebrow">MOMENTO 2 • TECNOLOGIAS & DECISÕES TÉCNICAS MAIS RELEVANTES (45s)</div>
+      <h2 class="slide-title">Monólito Modular & <span class="highlight">Decisões de Arquitetura</span></h2>
 
       <div class="grid-2">
         <div class="card card-accent-primary">
           <h3>Arquitetura: Monólito Modular</h3>
           <ul>
-            <li><strong>Next.js 14 (App Router) + TypeScript:</strong> Frontend e API REST unificados, sem complexidade de rede ou microserviços desnecessários.</li>
-            <li><strong>Fronteiras de Domínio Claras:</strong> Módulos encapsulados (<code>auth</code>, <code>projects</code>, <code>tasks</code>, <code>metrics</code>) que facilitam a atuação do agente sem quebrar contexto.</li>
-            <li><strong>Prisma ORM + SQLite:</strong> Esquema relacional estrito, migrações automatizadas e seed idempotente no arranque.</li>
-            <li><strong>Segurança & Sessão:</strong> Cookies HTTP-only com tokens HMAC-SHA256 e palavras-passe em hash <code>bcryptjs</code>.</li>
+            <li><strong>Next.js 14 (App Router) + TypeScript Estrito:</strong> Frontend React e API REST unificados no mesmo processo — elimina latência de rede, CORS e divergência de tipos.</li>
+            <li><strong>Fronteiras de Domínio Encapsuladas:</strong> Separação limpa em módulos (<code>auth</code>, <code>projects</code>, <code>tasks</code>, <code>metrics</code>) que permitiram à IA operar com contexto cirúrgico.</li>
+            <li><strong>Prisma ORM + SQLite Relacional:</strong> Persistência local em ficheiro com integridade referencial, migrações no arranque e seed idempotente sem custos de base de dados cloud.</li>
+            <li><strong>Sessões HTTP-Only com HMAC-SHA256:</strong> Tokens assinados criptograficamente em cookies protegidos contra XSS e adulteração de identidade.</li>
           </ul>
         </div>
 
         <div class="card card-accent-cyan">
-          <h3>Tecnologias & Operações</h3>
+          <h3>Decisões de Engenharia & Operações</h3>
           <ul>
-            <li><strong>UI & Interação:</strong> React 18, Tailwind CSS, <code>@hello-pangea/dnd</code> para Kanban e <code>Recharts</code> para velocidade semanal.</li>
-            <li><strong>Validação de Contratos:</strong> Schemas estritos com <strong>Zod</strong> em todos os endpoints de mutação.</li>
-            <li><strong>Docker Multi-Stage:</strong> Construção em 4 estágios com base Alpine Linux (~250MB de runtime) e utilizador não-root.</li>
-            <li><strong>Deploy em Produção:</strong> Alojado como Web Service Docker no <strong>Render.com</strong> com certificado SSL automático e HTTPS.</li>
+            <li><strong>Interface & Acessibilidade:</strong> Tailwind CSS com tokens semânticos de aviação, contraste WCAG AA, animações com <code>prefers-reduced-motion</code> e <code>Recharts</code>.</li>
+            <li><strong>Validação de Contratos:</strong> Schemas defensivos com <strong>Zod</strong> em todos os payloads externos (higienização de títulos, prazos e notas).</li>
+            <li><strong>Docker Multi-Stage Alpine (~250MB):</strong> Construção limpa em 4 fases (<code>base</code>, <code>deps</code>, <code>builder</code>, <code>runner</code>) com utilizador não-root (<code>nextjs:nodejs</code>).</li>
+            <li><strong>Produção no Render.com:</strong> Alojado como Web Service Docker na região europeia com certificado SSL e HTTPS automático.</li>
           </ul>
         </div>
       </div>
     </section>
 
     <!-- ====================================================================
-         SLIDE 3: Metodologia Agêntica com IA (45 segundos)
+         MOMENTO 3: Metodologia e IA (45 segundos)
          ==================================================================== -->
-    <section class="slide" data-slide="3" data-notes="[TEMPO: 45s] O grande diferencial metodológico foi o uso de Agentes de IA com regras de governação rígidas no ficheiro AGENTS.md. O agente nunca escreveu código sem apresentar primeiro um plano (Plan-First) e aguardar aprovação. Adotámos o critério da menor alteração necessária e BDD formal, assegurando que cada linha de código correspondia exatamente às User Stories do curso.">
-      <div class="slide-eyebrow">02 • METODOLOGIA AGÊNTICA COM IA</div>
-      <h2 class="slide-title">Governança Rigorosa com <span class="highlight">AGENTS.md</span></h2>
+    <section class="slide" data-slide="3" data-notes="[TEMPO: 45s • MOMENTO 3: METODOLOGIA E IA] O grande diferencial metodológico foi a governação do Agente de IA através do ficheiro AGENTS.md. O agente nunca operou de forma descontrolada: o princípio Plan-First exigiu apresentação e aprovação prévia de plano para cada módulo, com respeito absoluto pelo escopo do MVP. E como verifiquei os resultados? Não aceitei código às cegas — a âncora de verdade foi empírica: 10 suites automatizadas de teste no Node.js e Playwright no navegador headless validaram 100% das asserções antes de cada commit.">
+      <div class="slide-eyebrow">MOMENTO 3 • METODOLOGIA DE TRABALHO & UTILIZAÇÃO DE IA (45s)</div>
+      <h2 class="slide-title">Governança com <span class="highlight">AGENTS.md</span> & Verificação Empírica</h2>
 
       <div class="grid-2">
         <div class="card card-accent-emerald">
-          <h3>Regras Imperativas de Conduta (AGENTS.md)</h3>
+          <h3>Organização do Trabalho com IA</h3>
           <ul>
-            <li><strong>Princípio Plan-First:</strong> O agente detalha objetivos e ficheiros antes de executar qualquer edição em larga escala.</li>
-            <li><strong>Controlo Estrito de Escopo:</strong> Implementação restrita ao MVP, sem inventar funcionalidades fora do roadmap sem aprovação prévia.</li>
-            <li><strong>Menor Alteração Necessária:</strong> Edições cirúrgicas nas linhas estritamente necessárias, sem refatorações destrutivas.</li>
-            <li><strong>Tolerância Zero a Ações Destrutivas:</strong> Bloqueio autónomo de comandos como <code>drop table</code> ou <code>git reset --hard</code> sem confirmação humana.</li>
+            <li><strong>Princípio Plan-First:</strong> O agente detalha o objetivo técnico, lista de ficheiros e linhas exatas antes de editar qualquer código.</li>
+            <li><strong>Controlo Rigoroso de Escopo:</strong> Implementação estritamente focada nas User Stories do MVP, impedindo funcionalidades fora do roadmap.</li>
+            <li><strong>Menor Alteração Necessária:</strong> Modificações cirúrgicas sem refatorações destrutivas ou reescrita de código alheio.</li>
+            <li><strong>Tolerância Zero a Ações Destrutivas:</strong> Bloqueio autónomo de comandos sensíveis (ex: <code>drop table</code>, <code>git reset</code>) sem autorização humana expressa.</li>
           </ul>
         </div>
 
         <div class="card card-accent-primary">
-          <h3>Garantia da Qualidade por BDD</h3>
+          <h3>Como Verifiquei os Resultados da IA (Âncora de Verdade)</h3>
           <ul>
-            <li><strong>Especificação em BDD:</strong> Todas as User Stories formalizadas com critérios <em>Given / When / Then</em> em <code>docs/user-stories.md</code>.</li>
-            <li><strong>Pirâmide de Testes Automatizada:</strong> 10 suites cobrindo validação de título (13/13), integração API & SQLite (33/33), segurança IDOR (21/21) e MVP formal (34/34).</li>
-            <li><strong>Testes como Âncora de Verdade:</strong> O agente de IA só considera uma tarefa concluída após execução e aprovação empírica de 100% dos testes.</li>
+            <li><strong>Análise Estática Imediata:</strong> Tipagem estrita com <code>npx tsc --noEmit</code> validada após cada intervenção do agente.</li>
+            <li><strong>Pirâmide de Testes Automatizada:</strong> 10 suites cobrindo regras de negócio (13/13), integração API & SQLite (33/33), segurança IDOR (21/21) e MVP formal (34/34).</li>
+            <li><strong>Testes End-to-End com Playwright:</strong> Execução real no navegador Chromium headless validando o fluxo de login, criação e manipulação visual.</li>
+            <li><strong>Smoke Tests em Contentor Docker:</strong> Verificação do arranque e persistência na imagem final antes de qualquer release.</li>
           </ul>
         </div>
       </div>
     </section>
 
     <!-- ====================================================================
-         SLIDE 4: Principais Desafios Encontrados & Soluções (60 segundos)
+         MOMENTO 4: Desafios e Soluções (60 segundos)
          ==================================================================== -->
-    <section class="slide" data-slide="4" data-notes="[TEMPO: 60s] Durante o percurso, enfrentámos 4 grandes desafios técnicos e resolvemos todos na raiz. Primeiro, a execução de TypeScript no runner Node 20 do CI que resolvi integrando o TSX. Segundo, o scanner Trivy falhava com maiúsculas no nome do repositório, exigindo normalização para minúsculas estritas segundo o standard OCI. Terceiro, o arranque com SQLite no contentor exigiu fallbacks seguros no Dockerfile. E quarto, eliminámos vulnerabilidades IDOR na API bloqueando edições não autorizadas.">
-      <div class="slide-eyebrow">03 • RESILIÊNCIA & RESOLUÇÃO DE PROBLEMAS</div>
-      <h2 class="slide-title">Desafios Técnicos & <span class="highlight">Soluções Aplicadas</span></h2>
+    <section class="slide" data-slide="4" data-notes="[TEMPO: 60s • MOMENTO 4: DESAFIOS E SOLUÇÕES] Enfrentámos desafios técnicos concretos: primeiro, o runner Node 20 do CI falhava ao executar ficheiros TypeScript diretamente, o que resolvi integrando o TSX nas dependências de teste; segundo, o scanner de segurança Trivy quebrava com maiúsculas no username, exigindo normalização para o padrão OCI; terceiro, o arranque do SQLite em contentor exigiu fallbacks seguros no entrypoint; e quarto, eliminámos vulnerabilidades IDOR na API com bloqueio HTTP 403. A principal aprendizagem é que a IA acelera a codificação, mas a qualidade do software depende 100% de engenharia rigorosa e testes automatizados.">
+      <div class="slide-eyebrow">MOMENTO 4 • DESAFIOS TÉCNICOS & APRENDIZAGEM PRINCIPAL (60s)</div>
+      <h2 class="slide-title">Dificuldades Concretas, <span class="highlight">Resoluções & Aprendizagem</span></h2>
 
       <div class="grid-2">
-        <div class="card card-accent-amber" style="padding: 18px;">
-          <h3>⚠️ 1. Runner Node 20 & Execução TypeScript</h3>
-          <p><strong>Problema:</strong> Os testes falhavam no GitHub Actions com <code>ERR_UNKNOWN_FILE_EXTENSION</code> no Node 20 LTS.</p>
-          <p style="margin-top: 8px;"><strong>Solução:</strong> Integração de <code>tsx</code> nas dependências de desenvolvimento, permitindo execução universal e tipada direta sem compilação prévia.</p>
+        <div class="card card-accent-amber" style="padding: 16px;">
+          <h3>⚠️ 1. Runner Node 20 & Execução TypeScript no CI</h3>
+          <p><strong>Dificuldade:</strong> O GitHub Actions falhava com <code>ERR_UNKNOWN_FILE_EXTENSION</code> ao correr testes <code>.ts</code> diretamente no Node 20.</p>
+          <p style="margin-top: 6px;"><strong>Solução:</strong> Integração de <code>tsx</code> nas dependências, garantindo execução nativa, rápida e tipada tanto localmente como na pipeline.</p>
         </div>
 
-        <div class="card card-accent-rose" style="padding: 18px;">
-          <h3>⚠️ 2. Padrão OCI & Trivy Scanner</h3>
-          <p><strong>Problema:</strong> O Trivy falhava com o erro fatal <code>could not parse reference</code> devido às maiúsculas no username (<code>luisAfonsoM</code>).</p>
-          <p style="margin-top: 8px;"><strong>Solução:</strong> Normalização estrita do namespace da imagem para minúsculas (<code>luisafonsom/matriz-ai-course</code>), cumprindo a especificação OCI.</p>
+        <div class="card card-accent-rose" style="padding: 16px;">
+          <h3>⚠️ 2. Padrão OCI & Trivy Container Scanner</h3>
+          <p><strong>Dificuldade:</strong> O scanner Trivy falhava com <code>could not parse reference</code> devido às maiúsculas no username (<code>luisAfonsoM</code>).</p>
+          <p style="margin-top: 6px;"><strong>Solução:</strong> Normalização estrita do namespace da imagem para minúsculas (<code>luisafonsom/matriz-ai-course</code>), cumprindo a norma da Linux Foundation.</p>
         </div>
 
-        <div class="card card-accent-primary" style="padding: 18px;">
-          <h3>⚠️ 3. SQLite & Migrações em Contentor</h3>
-          <p><strong>Problema:</strong> O contentor parava no arranque do smoke test com falta de <code>DATABASE_URL</code> no <code>prisma migrate deploy</code>.</p>
-          <p style="margin-top: 8px;"><strong>Solução:</strong> Definição de fallbacks seguros no <code>Dockerfile</code> e injeção declarativa no script <code>docker-entrypoint.sh</code>.</p>
+        <div class="card card-accent-primary" style="padding: 16px;">
+          <h3>⚠️ 3. SQLite & Migrações no Contentor Docker</h3>
+          <p><strong>Dificuldade:</strong> Erro no arranque do contentor por ausência de <code>DATABASE_URL</code> no passo <code>prisma migrate deploy</code>.</p>
+          <p style="margin-top: 6px;"><strong>Solução:</strong> Injeção declarativa no <code>docker-entrypoint.sh</code> e fallbacks seguros de ambiente no <code>Dockerfile</code>.</p>
         </div>
 
-        <div class="card card-accent-emerald" style="padding: 18px;">
+        <div class="card card-accent-emerald" style="padding: 16px;">
           <h3>⚠️ 4. Segurança RBAC & Mitigação de IDOR</h3>
-          <p><strong>Problema:</strong> Risco de desassociação indevida de utilizadores por membros de equipa na rota <code>PUT /api/v1/tasks/:id</code>.</p>
-          <p style="margin-top: 8px;"><strong>Solução:</strong> Barreira defensiva na camada da API com validação da sessão e bloqueio estrito com HTTP 403 Forbidden.</p>
+          <p><strong>Dificuldade:</strong> Risco de um membro de equipa desassociar tarefas alheias através do endpoint <code>PUT /api/v1/tasks/:id</code>.</p>
+          <p style="margin-top: 6px;"><strong>Solução:</strong> Barreira defensiva com validação estrita da sessão no serviço de tarefas, bloqueando acessos indevidos com HTTP 403 Forbidden.</p>
         </div>
+      </div>
+
+      <!-- Caixa Destacada da Aprendizagem Principal (Pedido explícito do formador) -->
+      <div class="card card-accent-cyan" style="margin-top: 14px; padding: 14px 20px; background: rgba(6, 182, 212, 0.08); border-color: rgba(6, 182, 212, 0.3);">
+        <p style="font-size: 0.95rem; color: #e2e8f0; line-height: 1.4;">
+          💡 <strong>Aprendizagem Principal:</strong> A Inteligência Artificial acelera exponencialmente a implementação, mas a robustez e segurança de uma aplicação em produção dependem inteiramente da maturidade de engenharia do programador — especificações claras, testes automatizados e governança disciplinada.
+        </p>
       </div>
     </section>
 
     <!-- ====================================================================
-         SLIDE 5: Desafios Opcionais & Transição para Live Demo (2 minutos)
+         MOMENTO 5: Demonstração da Matriz em Execução (2 minutos)
          ==================================================================== -->
-    <section class="slide" data-slide="5" data-notes="[TEMPO: 30s + 2 min Live Demo] Para além do MVP, concluímos com sucesso os 3 Desafios Opcionais: auditoria de segurança com Trivy, observabilidade ativa com endpoint /api/health e logs JSON, e publicação automática da imagem no GHCR. Agora vamos passar diretamente à demonstração da aplicação em direto no Render.com!">
-      <div style="max-width: 920px; margin: 0 auto; text-align: center;">
-        <div class="slide-eyebrow" style="justify-content: center;">04 • DIFERENCIADORES & DEMONSTRAÇÃO PRÁTICA</div>
-        <h2 class="slide-title">Desafios Bónus & <span class="highlight">Demonstração ao Vivo</span></h2>
+    <section class="slide" data-slide="5" data-notes="[TEMPO: 2 min • MOMENTO 5: DEMONSTRAÇÃO PRÁTICA] Passo agora à demonstração da aplicação em execução no Render.com, demonstrando os 2 fluxos principais pedidos pelo professor: Primeiro, o ciclo de vida da tarefa no Kanban: entro como Gestor Luís Ferreira, crio uma tarefa com validação estrita, arrasto o cartão com drag-and-drop entre Hangar, Em Voo e Aterrado, e vemos o progresso e KPIs recalcularem instantaneamente. Segundo, a colaboração de equipa: atribuo múltiplos responsáveis sem duplicados, envio uma nota de rádio e mostro o endpoint /api/health com latência SQLite em milissegundos. O repositório GitHub está completo e entregue.">
+      <div style="max-width: 940px; margin: 0 auto; text-align: center;">
+        <div class="slide-eyebrow" style="justify-content: center;">MOMENTO 5 • DEMONSTRAÇÃO DA MATRIZ EM EXECUÇÃO (2 MINUTOS)</div>
+        <h2 class="slide-title">Guião de Demonstração & <span class="highlight">2 Fluxos Principais</span></h2>
 
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: left; margin-bottom: 24px;">
+        <!-- Credenciais Reais de Produção -->
+        <div style="display: flex; justify-content: center; gap: 14px; margin-bottom: 20px; flex-wrap: wrap;">
+          <span class="tag live" style="font-size: 0.88rem; padding: 6px 14px;"><strong>Comandante (Gestor):</strong> luis.ferreira@matriz.local / password123</span>
+          <span class="tag" style="font-size: 0.88rem; padding: 6px 14px;"><strong>Piloto (Membro):</strong> ana.silva@matriz.local / password123</span>
+          <span class="tag" style="font-size: 0.88rem; padding: 6px 14px;"><strong>Observabilidade:</strong> /api/health</span>
+        </div>
+
+        <div class="grid-2" style="text-align: left; margin-bottom: 20px;">
+          <!-- Fluxo Principal 1 -->
           <div class="card card-accent-primary" style="padding: 18px;">
-            <span class="code-pill">Desafio A</span>
-            <h4 style="color: #fff; font-size: 1rem; margin-top: 6px;">Segurança Ativa</h4>
-            <p style="font-size: 0.82rem; margin-top: 4px;">SCA com <code>npm audit</code> e análise de vulnerabilidades de imagens Docker com Trivy na pipeline.</p>
+            <span class="code-pill">Fluxo Principal 1</span>
+            <h4 style="color: #fff; font-size: 1rem; margin: 8px 0 6px 0;">Ciclo de Vida & Kanban Drag-and-Drop</h4>
+            <ol style="padding-left: 20px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">
+              <li>Iniciar sessão como Gestor Luís Ferreira.</li>
+              <li>Aceder ao ecrã de <strong>Checklists & Hangar</strong>.</li>
+              <li>Criar nova tarefa com validação defensiva de título.</li>
+              <li>Arrastar cartão entre <strong>Hangar ➔ Em Voo ➔ Aterrado</strong>.</li>
+              <li>Observar atualização instantânea da barra de progresso no Dashboard da Torre.</li>
+            </ol>
           </div>
 
+          <!-- Fluxo Principal 2 -->
           <div class="card card-accent-cyan" style="padding: 18px;">
-            <span class="code-pill">Desafio B</span>
-            <h4 style="color: #fff; font-size: 1rem; margin-top: 6px;">Observabilidade</h4>
-            <p style="font-size: 0.82rem; margin-top: 4px;">Endpoint <code>/api/health</code> com ping e latência SQLite em ms + Logger estruturado em JSON canónico.</p>
-          </div>
-
-          <div class="card card-accent-emerald" style="padding: 18px;">
-            <span class="code-pill">Desafio C</span>
-            <h4 style="color: #fff; font-size: 1rem; margin-top: 6px;">Publicação GHCR</h4>
-            <p style="font-size: 0.82rem; margin-top: 4px;">Pipeline de release acionada por tags SemVer (<code>v1.1.0</code>) publicada no GitHub Packages.</p>
+            <span class="code-pill">Fluxo Principal 2</span>
+            <h4 style="color: #fff; font-size: 1rem; margin: 8px 0 6px 0;">Colaboração N:M & Observabilidade</h4>
+            <ol style="padding-left: 20px; font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">
+              <li>Atribuir múltiplos pilotos (Ana Silva) sem duplicações acidentais.</li>
+              <li>Registar nota no rádio de comunicações com autor inferido.</li>
+              <li>Identificar visualmente alertas de tarefas críticas e atrasos em UTC.</li>
+              <li>Abrir separador <code>/api/health</code> evidenciando latência da base de dados SQLite.</li>
+            </ol>
           </div>
         </div>
 
-        <div class="card card-accent-emerald" style="padding: 24px; text-align: center; border-width: 2px;">
-          <h3 style="justify-content: center; font-size: 1.4rem; color: #fff;">🚀 Demonstração Prática no Render.com</h3>
-          <p style="font-size: 0.95rem; color: #cbd5e1; margin-top: 8px;">
-            Aplicação em produção acessível com HTTPS e dados de seed prontos:
-          </p>
-          <div style="margin-top: 16px; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-            <span class="tag live" style="font-size: 0.9rem; padding: 6px 14px;"><strong>Gestor:</strong> admin@matriz.local / admin123</span>
-            <span class="tag" style="font-size: 0.9rem; padding: 6px 14px;"><strong>Membro:</strong> dev1@matriz.local / dev123</span>
-            <span class="tag" style="font-size: 0.9rem; padding: 6px 14px;"><strong>Health:</strong> /api/health</span>
-          </div>
-          <p style="margin-top: 14px; font-size: 0.85rem; color: #94a3b8;">
-            (Transição para o navegador para demonstrar o Kanban, atribuição N:M e gráficos)
+        <!-- Caixa de Entrega Obrigatória GitHub -->
+        <div class="card card-accent-emerald" style="padding: 16px 24px; text-align: center; border-width: 2px;">
+          <h3 style="justify-content: center; font-size: 1.15rem; color: #fff;">
+            📦 Entrega Obrigatória Concluída no GitHub
+          </h3>
+          <p style="font-size: 0.9rem; color: #cbd5e1; margin-top: 4px;">
+            Repositório oficial: <a href="https://github.com/luisAfonsoM/matriz-ai-course" target="_blank" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">github.com/luisAfonsoM/matriz-ai-course</a> • Release v1.1.0 • CI/CD Verde • README Completo
           </p>
         </div>
       </div>
@@ -571,6 +621,7 @@
     <div class="help-hint">
       <span><kbd>→</kbd> Avançar</span>
       <span><kbd>N</kbd> Notas</span>
+      <span><kbd>T</kbd> Cronómetro (5m)</span>
       <span><kbd>F</kbd> Ecrã Total</span>
       <span><kbd>P</kbd> Imprimir/PDF</span>
     </div>
@@ -587,6 +638,8 @@
     const progressBar = document.getElementById('progressBar');
     const speakerNotesDrawer = document.getElementById('speakerNotesDrawer');
     const speakerNotesContent = document.getElementById('speakerNotesContent');
+    const timerTag = document.getElementById('timerTag');
+    const timerText = document.getElementById('timerText');
 
     totalSlidesNumEl.textContent = totalSlides;
 
@@ -635,6 +688,66 @@
       }
     }
 
+    /* Gestor de Tempo (Cronómetro Decrescente de 5 Minutos) */
+    let timeLeft = 300; // 5 minutos em segundos
+    let timerInterval = null;
+    let timerRunning = false;
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function updateTimerDisplay() {
+      timerText.textContent = formatTime(timeLeft);
+      if (timeLeft <= 0) {
+        timerTag.classList.remove('warning');
+        timerTag.classList.add('danger');
+      } else if (timeLeft <= 60) {
+        timerTag.classList.add('warning');
+        timerTag.classList.remove('danger');
+      } else {
+        timerTag.classList.remove('warning', 'danger');
+      }
+    }
+
+    function toggleTimer() {
+      if (timerRunning) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        timerTag.style.opacity = '0.7';
+      } else {
+        timerRunning = true;
+        timerTag.style.opacity = '1';
+        timerInterval = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateTimerDisplay();
+          } else {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            updateTimerDisplay();
+          }
+        }, 1000);
+      }
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timeLeft = 300;
+      timerTag.style.opacity = '1';
+      updateTimerDisplay();
+    }
+
+    if (timerTag) {
+      timerTag.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        resetTimer();
+      });
+    }
+
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       switch(e.key) {
@@ -662,6 +775,21 @@
           e.preventDefault();
           toggleNotes();
           break;
+        case 't':
+        case 'T':
+          e.preventDefault();
+          toggleTimer();
+          break;
+        case 'r':
+        case 'R':
+          e.preventDefault();
+          resetTimer();
+          break;
+        case 'p':
+        case 'P':
+          e.preventDefault();
+          window.print();
+          break;
         case 'Escape':
           speakerNotesDrawer.classList.remove('open');
           break;
@@ -669,6 +797,7 @@
     });
 
     updateSlide();
+    updateTimerDisplay();
   </script>
 </body>
 </html>
