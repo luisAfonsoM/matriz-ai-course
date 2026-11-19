@@ -2,19 +2,23 @@
 
 import { useState, useEffect, useCallback } from "react";
 import {
-  CheckCircle2,
+  PlaneLanding,
   Clock,
   AlertCircle,
-  ListTodo,
-  TrendingUp,
+  ClipboardList,
+  Compass,
   Plus,
   ArrowRight,
-  RefreshCw,
+  Fan,
   Calendar,
-  AlertTriangle,
-  User as UserIcon,
+  CloudLightning,
+  UserCheck,
+  Plane,
+  Gauge,
+  Rocket,
 } from "lucide-react";
 import { apiFetch } from "@/lib/api";
+import { AVIATION_LABELS } from "@/lib/labels";
 
 interface ProjectBrief {
   id: string;
@@ -100,11 +104,11 @@ export function DashboardView({
 
   if (projects.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-sm">
-        <ListTodo className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-        <h3 className="text-base font-bold text-slate-800">Nenhum projeto registado</h3>
-        <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-          Crie o seu primeiro projeto na aba <strong>Projetos</strong> para começar a acompanhar métricas e prazos.
+      <div className="bg-white rounded-2xl border border-navy-200 p-12 text-center shadow-xs">
+        <Plane className="w-12 h-12 text-navy-300 mx-auto mb-3 transform -rotate-45" />
+        <h3 className="text-base font-bold text-navy-900">{AVIATION_LABELS.empty.noMissions}</h3>
+        <p className="text-xs text-navy-500 mt-1 max-w-sm mx-auto">
+          {AVIATION_LABELS.empty.noMissionsSub}
         </p>
       </div>
     );
@@ -123,17 +127,18 @@ export function DashboardView({
 
   return (
     <div className="space-y-6">
-      {/* CABEÇALHO ANALÍTICO: SELETOR DE PROJETO & BARRA DE PROGRESSO */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+      {/* CABEÇALHO ANALÍTICO: SELETOR DE MISSÃO & BARRA DE PROGRESSO */}
+      <div className="bg-white rounded-2xl border border-navy-200 p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">
-              Projeto Ativo:
+            <span className="text-xs font-bold uppercase tracking-wider text-navy-500 whitespace-nowrap flex items-center gap-1.5">
+              <Plane className="w-3.5 h-3.5 text-aero-600" />
+              Missão Ativa:
             </span>
             <select
               value={selectedProject?.id || ""}
               onChange={(e) => onSelectProject(e.target.value)}
-              className="w-full sm:w-auto min-w-[260px] px-3 py-2 text-sm font-semibold bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-900"
+              className="w-full sm:w-auto min-w-[260px] px-3 py-2 text-sm font-semibold bg-navy-50 border border-navy-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-aero-500 focus:bg-white text-navy-900 transition"
             >
               {projects.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -144,26 +149,28 @@ export function DashboardView({
 
             <button
               onClick={() => selectedProject?.id && fetchMetrics(selectedProject.id)}
-              title="Recarregar métricas"
-              className="p-2 text-slate-500 hover:text-blue-600 hover:bg-slate-50 rounded-lg border border-slate-200 transition"
+              title="Calibrar instrumentos da torre"
+              className="p-2 text-navy-500 hover:text-aero-600 hover:bg-navy-50 rounded-lg border border-navy-200 transition"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-blue-600" : ""}`} />
+              <Fan className={`w-4 h-4 ${loading ? "animate-turbine-spin text-aero-600" : ""}`} />
             </button>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => onNavigateToTasks(selectedProject?.id)}
-              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 border border-slate-200 rounded-lg transition"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-navy-700 hover:text-aero-600 bg-navy-50 hover:bg-aero-50 border border-navy-200 rounded-lg transition"
             >
-              <span>Ver Tarefas</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ClipboardList className="w-3.5 h-3.5" />
+              <span>Ver Checklists</span>
+              <ArrowRight className="w-3 h-3" />
             </button>
 
             {currentUser?.role === "PROJECT_MANAGER" && (
               <button
+                data-testid="btn-new-task"
                 onClick={() => onOpenCreateTask && selectedProject?.id && onOpenCreateTask(selectedProject.id)}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-aero-600 hover:bg-aero-700 rounded-lg shadow-xs transition duration-150 hover:-translate-y-0.5 active:translate-y-0 motion-reduce:transform-none"
               >
                 <Plus className="w-4 h-4" />
                 <span>Nova Tarefa</span>
@@ -172,23 +179,23 @@ export function DashboardView({
           </div>
         </div>
 
-        {/* BARRA DE PROGRESSO GLOBAL COM PREVENÇÃO DIVISÃO POR ZERO (EC01) */}
-        <div className="pt-3 border-t border-slate-100">
+        {/* BARRA DE PROGRESSO GLOBAL (DIVISÃO POR ZERO TRATADA) */}
+        <div className="pt-3 border-t border-navy-100">
           <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-            <span className="text-slate-600">
-              Progresso Geral:{" "}
-              <strong className="text-slate-900">
-                {metrics ? `${metrics.completedTasks}/${metrics.totalTasks} tarefas concluídas` : "A calcular..."}
+            <span className="text-navy-600">
+              {AVIATION_LABELS.metrics.projectProgress}:{" "}
+              <strong className="text-navy-900">
+                {metrics ? `${metrics.completedTasks}/${metrics.totalTasks} checklists aterradas` : "A calcular..."}
               </strong>
             </span>
-            <span className="text-blue-700 font-bold text-sm">
+            <span className="text-aero-700 font-bold text-sm">
               {metrics ? `${metrics.progressPercentage}%` : "0%"}
             </span>
           </div>
-          <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div className="w-full bg-navy-100 rounded-full h-3 overflow-hidden">
             <div
               className={`h-3 rounded-full transition-all duration-500 ${
-                metrics?.progressPercentage === 100 ? "bg-emerald-500" : "bg-blue-600"
+                metrics?.progressPercentage === 100 ? "bg-hud-500" : "bg-aero-600"
               }`}
               style={{ width: `${metrics?.progressPercentage || 0}%` }}
             />
@@ -198,78 +205,78 @@ export function DashboardView({
 
       {/* ERRO AO CARREGAR MÉTRICAS */}
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+        <div className="p-4 bg-storm-50 border border-storm-200 rounded-xl text-xs text-storm-700 flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-storm-600 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* GRELHA DE 4 KPI CARDS (TOTAL, DONE, IN_PROGRESS, OVERDUE) */}
+      {/* GRELHA DE 4 KPI CARDS COM INSTRUMENTOS DE COCKPIT */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total de Tarefas */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+        {/* Total de Itens */}
+        <div className="bg-white p-5 rounded-2xl border border-navy-200 shadow-xs flex items-center justify-between">
           <div>
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-              Total de Tarefas
+            <p className="text-[11px] font-bold text-navy-400 uppercase tracking-wider mb-1">
+              {AVIATION_LABELS.metrics.totalTasks}
             </p>
-            <p className="text-3xl font-extrabold text-slate-800">
+            <p className="text-3xl font-extrabold text-navy-900">
               {loading ? "..." : metrics?.totalTasks ?? 0}
             </p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center">
-            <ListTodo className="w-6 h-6" />
+          <div className="w-12 h-12 rounded-xl bg-navy-100 text-navy-700 flex items-center justify-center">
+            <ClipboardList className="w-6 h-6" />
           </div>
         </div>
 
-        {/* Concluídas (DONE) */}
-        <div className="bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm flex items-center justify-between bg-emerald-50/20">
+        {/* Aterradas (DONE) */}
+        <div className="bg-white p-5 rounded-2xl border border-hud-100 shadow-xs flex items-center justify-between bg-hud-50/20">
           <div>
-            <p className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-1">
-              Concluídas (DONE)
+            <p className="text-[11px] font-bold text-hud-700 uppercase tracking-wider mb-1">
+              {AVIATION_LABELS.status.DONE} (Concluídas)
             </p>
-            <p className="text-3xl font-extrabold text-emerald-600">
+            <p className="text-3xl font-extrabold text-hud-600">
               {loading ? "..." : metrics?.completedTasks ?? 0}
             </p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
-            <CheckCircle2 className="w-6 h-6" />
+          <div className="w-12 h-12 rounded-xl bg-hud-100 text-hud-600 flex items-center justify-center">
+            <PlaneLanding className="w-6 h-6" />
           </div>
         </div>
 
-        {/* Em Progresso (IN_PROGRESS) */}
-        <div className="bg-white p-5 rounded-2xl border border-blue-100 shadow-sm flex items-center justify-between bg-blue-50/20">
+        {/* Em Voo (IN_PROGRESS) */}
+        <div className="bg-white p-5 rounded-2xl border border-aero-100 shadow-xs flex items-center justify-between bg-aero-50/20">
           <div>
-            <p className="text-[11px] font-bold text-blue-700 uppercase tracking-wider mb-1">
-              Em Progresso
+            <p className="text-[11px] font-bold text-aero-700 uppercase tracking-wider mb-1">
+              {AVIATION_LABELS.status.IN_PROGRESS}
             </p>
-            <p className="text-3xl font-extrabold text-blue-600">
+            <p className="text-3xl font-extrabold text-aero-600">
               {loading ? "..." : metrics?.inProgressTasks ?? 0}
             </p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
-            <Clock className="w-6 h-6" />
+          <div className="w-12 h-12 rounded-xl bg-aero-100 text-aero-600 flex items-center justify-center">
+            <Plane className="w-6 h-6 transform -rotate-45" />
           </div>
         </div>
 
-        {/* Tarefas em Atraso (isOverdue) */}
+        {/* Em Turbulência / Atraso (isOverdue) */}
         <div
-          className={`p-5 rounded-2xl border shadow-sm flex items-center justify-between transition ${
+          className={`p-5 rounded-2xl border shadow-xs flex items-center justify-between transition ${
             (metrics?.overdueTasksCount || 0) > 0
-              ? "bg-rose-50/80 border-rose-300 text-rose-900"
-              : "bg-white border-slate-200 text-slate-700"
+              ? "bg-storm-50 border-storm-300 text-storm-900"
+              : "bg-white border-navy-200 text-navy-700"
           }`}
         >
           <div>
             <p
               className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${
-                (metrics?.overdueTasksCount || 0) > 0 ? "text-rose-700" : "text-slate-400"
+                (metrics?.overdueTasksCount || 0) > 0 ? "text-storm-700" : "text-navy-400"
               }`}
             >
-              Tarefas em Atraso
+              {AVIATION_LABELS.metrics.overdueCount}
             </p>
             <p
               className={`text-3xl font-extrabold ${
-                (metrics?.overdueTasksCount || 0) > 0 ? "text-rose-600" : "text-slate-800"
+                (metrics?.overdueTasksCount || 0) > 0 ? "text-storm-600" : "text-navy-900"
               }`}
             >
               {loading ? "..." : metrics?.overdueTasksCount ?? 0}
@@ -278,47 +285,47 @@ export function DashboardView({
           <div
             className={`w-12 h-12 rounded-xl flex items-center justify-center ${
               (metrics?.overdueTasksCount || 0) > 0
-                ? "bg-rose-100 text-rose-600 animate-pulse"
-                : "bg-slate-100 text-slate-400"
+                ? "bg-storm-100 text-storm-600 animate-pulse"
+                : "bg-navy-100 text-navy-400"
             }`}
           >
-            <AlertTriangle className="w-6 h-6" />
+            <CloudLightning className="w-6 h-6" />
           </div>
         </div>
       </div>
 
-      {/* CASO-LIMITE: PROJETO VAZIO (EC01) */}
+      {/* CASO-LIMITE: HANGAR VAZIO (EC01) */}
       {metrics && metrics.totalTasks === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center shadow-sm">
-          <ListTodo className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-slate-800">
-            Ainda não foram criadas tarefas neste projeto (EC01)
+        <div className="bg-white rounded-2xl border border-navy-200 p-10 text-center shadow-xs">
+          <Plane className="w-12 h-12 text-navy-300 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-navy-900">
+            {AVIATION_LABELS.empty.emptyHangar}
           </h3>
-          <p className="text-xs text-slate-500 max-w-md mx-auto mt-1 mb-5">
-            Estruture o plano de trabalho da equipa adicionando a primeira tarefa com prioridade, responsáveis e prazo.
+          <p className="text-xs text-navy-500 max-w-md mx-auto mt-1 mb-5">
+            Estruture o plano de voo da equipa adicionando o primeiro item com piloto responsável, prioridade e prazo.
           </p>
           <button
             onClick={() => onNavigateToTasks(selectedProject.id)}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-sm transition"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-aero-600 hover:bg-aero-700 text-white text-xs font-semibold rounded-lg shadow-xs transition"
           >
-            <Plus className="w-4 h-4" /> Criar Primeira Tarefa do Projeto
+            <Plus className="w-4 h-4" /> Criar Primeira Checklist da Missão
           </button>
         </div>
       ) : (
-        /* PAINÉIS LADO A LADO: VELOCIDADE SEMANAL (RF12) & TAREFAS CRÍTICAS (RF11/US04) */
+        /* PAINÉIS: VELOCIDADE DE CRUZEIRO & VOOS CRÍTICOS */
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Painel: Velocidade Semanal (Últimos 7 dias) */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+          {/* Painel: Velocidade de Cruzeiro (Últimos 7 dias) */}
+          <div className="bg-white rounded-2xl border border-navy-200 p-5 shadow-xs flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+              <div className="flex items-center justify-between pb-3 border-b border-navy-100 mb-4">
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-blue-600" />
-                  <h3 className="font-bold text-slate-900 text-sm">
-                    Velocidade Semanal (Últimos 7 dias)
+                  <Compass className="w-4 h-4 text-aero-600" />
+                  <h3 className="font-bold text-navy-900 text-sm">
+                    {AVIATION_LABELS.metrics.velocityTitle}
                   </h3>
                 </div>
-                <span className="text-[10px] font-semibold text-slate-400 uppercase">
-                  Tarefas concluídas / dia
+                <span className="text-[10px] font-semibold text-navy-400 uppercase">
+                  {AVIATION_LABELS.metrics.velocitySubtitle}
                 </span>
               </div>
 
@@ -336,20 +343,20 @@ export function DashboardView({
 
                   return (
                     <div key={day.date} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                      <span className="text-[11px] font-bold text-slate-700">
+                      <span className="text-[11px] font-bold text-navy-800">
                         {day.completedCount}
                       </span>
-                      <div className="w-full max-w-[32px] bg-slate-100 rounded-t-lg h-28 relative flex items-end overflow-hidden">
+                      <div className="w-full max-w-[32px] bg-navy-100 rounded-t-lg h-28 relative flex items-end overflow-hidden">
                         <div
                           className={`w-full rounded-t-lg transition-all duration-500 ${
-                            isToday ? "bg-blue-600" : "bg-blue-400 hover:bg-blue-500"
+                            isToday ? "bg-aero-600" : "bg-aero-400 hover:bg-aero-500"
                           }`}
                           style={{ height: `${Math.max(heightPercentage, 6)}%` }}
                         />
                       </div>
                       <span
                         className={`text-[10px] whitespace-nowrap font-medium ${
-                          isToday ? "text-blue-700 font-bold" : "text-slate-400"
+                          isToday ? "text-aero-700 font-bold" : "text-navy-400"
                         }`}
                       >
                         {isToday ? "Hoje" : dayFormatted}
@@ -360,77 +367,77 @@ export function DashboardView({
               </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-100 mt-4 text-xs text-slate-500 flex items-center justify-between">
-              <span>Média Semanal: <strong className="text-slate-800">{avgVelocity} tarefas / dia</strong></span>
-              <span className="text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 text-[10px]">
-                {totalCompletedLast7Days} concluídas na semana
+            <div className="pt-3 border-t border-navy-100 mt-4 text-xs text-navy-500 flex items-center justify-between">
+              <span>Ritmo de Voo: <strong className="text-navy-900">{avgVelocity} itens / dia</strong></span>
+              <span className="text-hud-700 font-semibold bg-hud-50 px-2 py-0.5 rounded border border-hud-200 text-[10px]">
+                {totalCompletedLast7Days} aterradas na semana
               </span>
             </div>
           </div>
 
-          {/* Painel: Atenção a Tarefas Críticas (Em Atraso ou a Expirar) */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
+          {/* Painel: Atenção a Voos Críticos & Turbulência */}
+          <div className="bg-white rounded-2xl border border-navy-200 p-5 shadow-xs flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+              <div className="flex items-center justify-between pb-3 border-b border-navy-100 mb-3">
                 <div className="flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-rose-600" />
-                  <h3 className="font-bold text-slate-900 text-sm">
-                    Atenção: Tarefas Críticas ({metrics?.criticalTasks?.length || 0})
+                  <CloudLightning className="w-4 h-4 text-storm-600" />
+                  <h3 className="font-bold text-navy-900 text-sm">
+                    {AVIATION_LABELS.metrics.criticalTitle} ({metrics?.criticalTasks?.length || 0})
                   </h3>
                 </div>
-                <span className="text-[10px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
-                  Requer Intervenção
+                <span className="text-[10px] font-semibold text-storm-600 bg-storm-50 px-2 py-0.5 rounded border border-storm-200">
+                  Intervenção Imediata
                 </span>
               </div>
 
-              {/* Lista de Tarefas Críticas */}
+              {/* Lista de Voos Críticos */}
               <div className="space-y-2.5 max-h-56 overflow-y-auto pr-1">
                 {metrics?.criticalTasks && metrics.criticalTasks.length > 0 ? (
                   metrics.criticalTasks.map((task) => (
                     <div
                       key={task.id}
                       onClick={() => onNavigateToTasks(selectedProject.id)}
-                      className={`p-3 rounded-xl border text-xs cursor-pointer transition hover:shadow-sm ${
+                      className={`p-3 rounded-xl border text-xs cursor-pointer transition hover:shadow-xs ${
                         task.isOverdue
-                          ? "bg-rose-50/40 border-rose-200 hover:border-rose-300"
-                          : "bg-amber-50/40 border-amber-200 hover:border-amber-300"
+                          ? "bg-storm-50/60 border-storm-200 hover:border-storm-300"
+                          : "bg-runway-50/60 border-runway-200 hover:border-runway-300"
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <span
-                          className={`text-[10px] px-1.5 py-0.2 rounded font-bold uppercase ${
+                          className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${
                             task.isOverdue
-                              ? "bg-rose-100 text-rose-700"
-                              : "bg-amber-100 text-amber-700"
+                              ? "bg-storm-100 text-storm-700"
+                              : "bg-runway-100 text-runway-700"
                           }`}
                         >
-                          {task.isOverdue ? "Prazo Expirado" : "Expira Hoje"}
+                          {task.isOverdue ? "Prazo Expirado (UTC)" : "Expira Hoje"}
                         </span>
-                        <span className="text-[10px] text-slate-400 flex items-center gap-1 font-medium">
+                        <span className="text-[10px] text-navy-400 flex items-center gap-1 font-medium">
                           <Calendar className="w-3 h-3" />
                           {new Date(task.dueDate).toLocaleDateString("pt-PT")}
                         </span>
                       </div>
-                      <h4 className="font-semibold text-slate-900 line-clamp-1 mb-1">
+                      <h4 className="font-semibold text-navy-900 line-clamp-1 mb-1">
                         {task.title}
                       </h4>
-                      <div className="flex items-center justify-between text-[11px] text-slate-500">
+                      <div className="flex items-center justify-between text-[11px] text-navy-500">
                         <span className="flex items-center gap-1">
-                          <UserIcon className="w-3 h-3 text-slate-400" />
-                          {task.assignee?.name || "Não atribuída"}
+                          <UserCheck className="w-3 h-3 text-navy-400" />
+                          {task.assignee?.name || AVIATION_LABELS.crew.unassigned}
                         </span>
-                        <span className="font-medium text-slate-700">
-                          {task.status === "IN_PROGRESS" ? "Em Progresso" : "A Fazer"}
+                        <span className="font-medium text-navy-800">
+                          {task.status === "IN_PROGRESS" ? "Em Voo" : "No Hangar"}
                         </span>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="py-12 text-center text-slate-400">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
-                    <p className="text-xs font-semibold text-slate-700">Nenhuma tarefa crítica pendente!</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
-                      Todas as tarefas ativas estão dentro dos prazos acordados.
+                  <div className="py-12 text-center text-navy-400">
+                    <PlaneLanding className="w-8 h-8 text-hud-500 mx-auto mb-2" />
+                    <p className="text-xs font-semibold text-navy-800">Céu limpo: nenhum voo crítico pendente!</p>
+                    <p className="text-[11px] text-navy-400 mt-0.5">
+                      Todos os itens ativos estão perfeitamente dentro dos prazos de voo.
                     </p>
                   </div>
                 )}
@@ -439,9 +446,9 @@ export function DashboardView({
 
             <button
               onClick={() => onNavigateToTasks(selectedProject.id)}
-              className="mt-4 w-full py-2 px-3 text-xs font-semibold text-blue-700 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition text-center flex items-center justify-center gap-1.5"
+              className="mt-4 w-full py-2 px-3 text-xs font-semibold text-aero-700 hover:text-aero-800 bg-aero-50 hover:bg-aero-100 border border-aero-200 rounded-lg transition text-center flex items-center justify-center gap-1.5"
             >
-              <span>Aceder à Gestão Detalhada de Tarefas</span>
+              <span>Aceder ao Hangar & Checklists</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

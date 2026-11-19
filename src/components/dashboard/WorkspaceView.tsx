@@ -7,6 +7,7 @@ import { ProjectManagement } from "@/components/projects/ProjectManagement";
 import { TaskManagement } from "@/components/tasks/TaskManagement";
 import { Lock } from "lucide-react";
 import Link from "next/link";
+import { AVIATION_LABELS } from "@/lib/labels";
 
 interface CurrentUser {
   id: string;
@@ -80,7 +81,7 @@ export function WorkspaceView({
   }, [refreshWorkspace]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
+    <div className="min-h-screen bg-navy-50 text-navy-900 flex flex-col">
       {/* BARRA SUPERIOR DE NAVEGAÇÃO E MOCK SWITCHER (Wireframe TopBar) */}
       <TopBar
         activeTab={activeTab}
@@ -92,34 +93,34 @@ export function WorkspaceView({
       <main className="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
         {/* AVISO SE NÃO AUTENTICADO */}
         {!currentUser && (
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between gap-4 shadow-xs">
+          <div className="p-4 bg-runway-50 border border-runway-200 rounded-2xl flex items-center justify-between gap-4 shadow-xs">
             <div className="flex items-center gap-3">
-              <Lock className="w-5 h-5 text-amber-600 flex-shrink-0" />
+              <Lock className="w-5 h-5 text-runway-600 flex-shrink-0" />
               <div>
-                <p className="text-sm font-semibold text-amber-900">Modo de Apenas Leitura</p>
-                <p className="text-xs text-amber-700">
-                  Inicie sessão para poder criar ou editar projetos e tarefas de acordo com o seu perfil.
+                <p className="text-sm font-semibold text-navy-900">Modo de Apenas Leitura (Visitante de Voo)</p>
+                <p className="text-xs text-navy-600">
+                  Inicie sessão na torre para poder criar ou coordenar missões e checklists de acordo com o seu perfil.
                 </p>
               </div>
             </div>
             <Link
               href="/login"
-              className="text-xs font-semibold px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg shadow-sm whitespace-nowrap transition"
+              className="text-xs font-semibold px-3 py-1.5 bg-runway-600 hover:bg-runway-700 text-white rounded-lg shadow-xs whitespace-nowrap transition"
             >
-              Aceder ao Login
+              Aceder à Torre
             </Link>
           </div>
         )}
 
-        {/* ECRÃ 1: PAINEL INICIAL (DASHBOARD) */}
+        {/* ECRÃ 1: PAINEL INICIAL (TORRE DE CONTROLO / DASHBOARD) */}
         {activeTab === "DASHBOARD" && (
           <section className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900">
-                Painel Analítico de Acompanhamento
+              <h2 className="text-xl font-bold tracking-tight text-navy-900">
+                {AVIATION_LABELS.nav.dashboard} — Radar de Operações
               </h2>
-              <p className="text-xs text-slate-500">
-                Visão consolidada em tempo real: percentagem de conclusão, contagens por estado, velocidade semanal e alertas de atraso.
+              <p className="text-xs text-navy-500">
+                Visão consolidada em tempo real: percentagem de voo concluído, checklists por estado, velocidade de cruzeiro e turbulências de prazo.
               </p>
             </div>
             <DashboardView
@@ -139,15 +140,15 @@ export function WorkspaceView({
           </section>
         )}
 
-        {/* ECRÃ 2: PROJETOS (LISTAGEM, PESQUISA, CRIAÇÃO, EDIÇÃO E ELIMINAÇÃO) */}
+        {/* ECRÃ 2: GESTÃO DE MISSÕES (PROJETOS) */}
         {activeTab === "PROJECTS" && (
           <section className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900">
-                Gestão de Projetos
+              <h2 className="text-xl font-bold tracking-tight text-navy-900">
+                Esquadrão de {AVIATION_LABELS.nav.projects}
               </h2>
-              <p className="text-xs text-slate-500">
-                Carteira de projetos da organização: pesquisa por nome, ciclo de vida e eliminação em cascata sem dados órfãos.
+              <p className="text-xs text-navy-500">
+                Coordenação de missões ativas, datas de descolagem e objetivos da organização.
               </p>
             </div>
             <ProjectManagement
@@ -156,64 +157,39 @@ export function WorkspaceView({
                 setActiveProjectId(projId);
                 setActiveTab("PROJECT_DETAIL");
               }}
-              onMutation={refreshWorkspace}
+              onProjectCreated={refreshWorkspace}
+              onProjectDeleted={refreshWorkspace}
             />
           </section>
         )}
 
-        {/* ECRÃ 3: DETALHE DO PROJETO & TAREFAS ASSOCIADAS */}
-        {activeTab === "PROJECT_DETAIL" && (
+        {/* ECRÃ 3: QUADRO KANBAN & CHECKLISTS DE VOO (TAREFAS) */}
+        {(activeTab === "TASKS" || activeTab === "PROJECT_DETAIL") && (
           <section className="space-y-4">
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900">
-                Detalhe do Projeto & Tarefas
+              <h2 className="text-xl font-bold tracking-tight text-navy-900">
+                {AVIATION_LABELS.nav.tasks} & Hangar
               </h2>
-              <p className="text-xs text-slate-500">
-                Tarefas de trabalho do projeto selecionado: filtros de estado e prioridade, prazos e registo de atividades.
+              <p className="text-xs text-navy-500">
+                Quadro de fluxo operacional: itens no Hangar, Em Voo e Aterrados com movimentação visual.
               </p>
             </div>
             <TaskManagement
               projects={projects}
               activeProjectId={activeProjectId}
-              onProjectChange={setActiveProjectId}
+              onSelectProject={setActiveProjectId}
               currentUser={currentUser}
-              onMutation={refreshWorkspace}
-              onBackToProjects={() => setActiveTab("PROJECTS")}
-              isDetailView={true}
-            />
-          </section>
-        )}
-
-        {/* ECRÃ 4: TODAS AS TAREFAS */}
-        {activeTab === "TASKS" && (
-          <section className="space-y-4">
-            <div>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900">
-                Gestão Global de Tarefas
-              </h2>
-              <p className="text-xs text-slate-500">
-                Navegue pelas tarefas de qualquer projeto, filtre por estado ou prioridade e atribua colaboradores.
-              </p>
-            </div>
-            <TaskManagement
-              projects={projects}
-              activeProjectId={activeProjectId}
-              onProjectChange={setActiveProjectId}
-              currentUser={currentUser}
-              onMutation={refreshWorkspace}
+              onTasksUpdated={refreshWorkspace}
             />
           </section>
         )}
       </main>
 
-      {/* RODAPÉ DISCRETO */}
-      <footer className="border-t border-slate-200 bg-white py-4 mt-auto">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
+      {/* RODAPÉ DO COCKPIT */}
+      <footer className="border-t border-navy-200 bg-white py-4 mt-auto">
+        <div className="max-w-6xl mx-auto px-4 text-center text-xs text-navy-400">
           <p>
-            <strong>Matriz</strong> — Plataforma de Gestão de Projetos e Acompanhamento de Equipas (PoC MVP).
-          </p>
-          <p>
-            Desenvolvido com Abordagem Agêntica (Agentic Approach).
+            <strong>{AVIATION_LABELS.brand.name}</strong> • {AVIATION_LABELS.brand.tagline} • Release Candidate v1.1.0-rc.2
           </p>
         </div>
       </footer>
