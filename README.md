@@ -1,6 +1,6 @@
 # Matriz — Plataforma de Gestão de Projetos e Acompanhamento de Equipas
 
-[![Version](https://img.shields.io/badge/Versão-v1.1.0--rc.1%20(Release%20Candidate)-orange.svg)](docs/release-notes-v1.1.0-rc.1.md)
+[![Version](https://img.shields.io/badge/Versão-v1.1.0%20(Release%20Final)-success.svg)](docs/release-notes-v1.1.0.md)
 [![Apresentação](https://img.shields.io/badge/Apresentação-HTML%20Slides-blueviolet.svg)](docs/presentation.html)
 [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions%20Passing-success.svg)](.github/workflows/ci.yml)
 [![Docker](https://img.shields.io/badge/Docker%20Compose-Ready%20(Healthy)-2496ED.svg)](compose.yaml)

@@ -211,7 +211,7 @@ export function WorkspaceView({
       <footer className="border-t border-navy-200 bg-white py-4 mt-auto">
         <div className="max-w-6xl mx-auto px-4 text-center text-xs text-navy-400">
           <p>
-            <strong>{AVIATION_LABELS.brand.name}</strong> • {AVIATION_LABELS.brand.tagline} • Release Candidate v1.1.0-rc.2
+            <strong>{AVIATION_LABELS.brand.name}</strong> • {AVIATION_LABELS.brand.tagline} • Versão Final v1.1.0 (Produção)
           </p>
         </div>
       </footer>

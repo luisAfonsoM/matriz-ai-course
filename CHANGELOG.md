@@ -7,7 +7,7 @@ e este projeto adere ao [Semantic Versioning (SemVer 2.0.0)](https://semver.org/
 
 ---
 
-## [1.1.0-rc.2] - 2026-11-19
+## [1.1.0] - 2026-11-19 — Versão Final & Identidade Visual de Aviação
 
 ### Adicionado (Added)
 * **Identidade Visual de Aviação ("Torre de Operações Matriz"):**
