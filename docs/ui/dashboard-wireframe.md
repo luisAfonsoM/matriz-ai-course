@@ -109,3 +109,13 @@ Quando o utilizador em sessão for alterado para Membro de Equipa via *Mock Swit
 
 Para visualizar o wireframe em alta definição com tipografia, contrastes e elementos estilizados, consulte o ficheiro SVG:
 👉 **[docs/ui/dashboard-wireframe.svg](dashboard-wireframe.svg)**
+
+---
+
+## 6. Evolução para Identidade Visual de Aviação ("Torre de Operações")
+
+Na Release Candidate v1.1.0-rc.2, o wireframe inicial evoluiu para uma identidade visual temática de aviação comercial e naval em modo claro:
+* **Logótipo e Marca:** Substituição do glifo genérico "M" pelo símbolo aeronáutico `Plane` acompanhado pelo nome canónico "Matriz".
+* **Design Tokens:** Tokens semânticos `aero` (azul-céu), `navy` (cinza-naval), `runway` (âmbar de pista), `hud` (verde de confirmação) e `storm` (alerta de turbulência/atraso) com contraste WCAG AA.
+* **Micro-interações:** Animações CSS `animate-turbine-spin` e `animate-plane-takeoff`, respeitando `prefers-reduced-motion`.
+* **Capturas de Ecrã:** Disponíveis em alta resolução no diretório [`docs/ui/screenshots/`](screenshots/).

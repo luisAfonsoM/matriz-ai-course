@@ -27,6 +27,33 @@ O projeto foi construído utilizando o paradigma do **Desenvolvimento Assistido 
 
 ---
 
+## 1.1 Identidade Visual de Aviação ("Torre de Operações Matriz")
+
+A interface da plataforma foi concebida com uma estética inspirada na **aviação moderna e cockpits de comando**, combinando precisão operacional comercial e militar em modo claro:
+
+* **Paleta Semântica de Design (Tokens Tailwind):**
+  * `aero` (`#0284c7` / `#0369a1`): Azul aeronáutico de céu aberto para botões primários, acentos e cursores ativos.
+  * `navy` (`#0f172a` / `#1e293b`): Cinza naval militar para texto de alto contraste, cartões e superfícies táteis.
+  * `runway` (`#d97706`): Âmbar de sinalização de pista para avisos de transponder e perfis de comando.
+  * `hud` (`#059669`): Verde fosfórico de heads-up display (HUD) para missões e voos concluídos.
+  * `storm` (`#e11d48`): Magenta de tempestade e radar meteorológico para tarefas em turbulência (prazos expirados).
+* **Micro-interações com Suporte a Acessibilidade:**
+  * `animate-turbine-spin`: Efeito de rotação contínua da turbina (`Fan`) durante recarregamentos e leitura de telemetria.
+  * `animate-plane-takeoff`: Efeito de sustentação e elevação de voo no hover dos botões de ação e submissão.
+  * Conformidade estrita com `prefers-reduced-motion` (`motion-reduce:transform-none`, `motion-reduce:animate-none`).
+* **Terminologia Consistente:** Mapeamento centralizado em [`src/lib/labels.ts`](src/lib/labels.ts) (Torre de Controlo, Esquadrão de Missões, Checklists de Voo & Hangar, Pilotos e Comandantes), mantendo 100% de estabilidade nos esquemas de dados e rotas de API.
+
+### Galeria de Ecrãs da Aplicação
+
+| Ecrã | Pré-visualização |
+|---|---|
+| **Cockpit Login** | [![Login](docs/ui/screenshots/01-login-cockpit.png)](docs/ui/screenshots/01-login-cockpit.png) |
+| **Torre de Controlo (Dashboard)** | [![Dashboard](docs/ui/screenshots/02-dashboard-torre-controlo.png)](docs/ui/screenshots/02-dashboard-torre-controlo.png) |
+| **Esquadrão de Missões** | [![Missões](docs/ui/screenshots/03-missoes-esquadrao.png)](docs/ui/screenshots/03-missoes-esquadrao.png) |
+| **Checklists & Hangar** | [![Checklists](docs/ui/screenshots/04-checklists-voo.png)](docs/ui/screenshots/04-checklists-voo.png) |
+
+---
+
 ## 2. Tecnologias Utilizadas
 
 ```mermaid

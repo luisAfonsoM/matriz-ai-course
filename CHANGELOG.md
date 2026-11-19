@@ -7,6 +7,25 @@ e este projeto adere ao [Semantic Versioning (SemVer 2.0.0)](https://semver.org/
 
 ---
 
+## [1.1.0-rc.2] - 2026-11-19
+
+### Adicionado (Added)
+* **Identidade Visual de Aviação ("Torre de Operações Matriz"):**
+  * **Tokens Semânticos de Design:** Extensão do `tailwind.config.ts` com paleta aeronáutica profissional (`aero` azul-céu, `navy` cinza-naval, `runway` âmbar-pista, `hud` verde-cockpit e `storm` alerta de turbulência), mantendo contraste mínimo WCAG AA em modo claro.
+  * **Micro-interações & Animações CSS:** Criação de keyframes personalizados `turbine-spin` (turbina rotativa para estados de loading) e `plane-takeoff` (efeito de sustentação/descolagem em botões de ação e submissão), com suporte total a acessibilidade motora via `prefers-reduced-motion` (`motion-reduce:` / `motion-safe:`).
+  * **Módulo Centralizado de Terminologia:** Criação do módulo [`src/lib/labels.ts`](src/lib/labels.ts) com mapeamento semântico de vocabulário de aviação para navegação, papéis de tripulação, estados de voo e alertas, mantendo 100% de estabilidade nas APIs, enums e Prisma.
+  * **Cockpit Hero na Página de Login:** Redesenho da interface [`src/app/login/page.tsx`](src/app/login/page.tsx) com painel hero ilustrado em gradiente aero/navy com bússola, radar e vento (`Plane`, `Compass`, `Radar`, `Wind`), transponder ativo e cartões táteis para credenciais de teste (Comandante e Piloto).
+  * **TopBar & Logótipo:** Atualização da barra superior [`src/components/layout/TopBar.tsx`](src/components/layout/TopBar.tsx) com o novo logótipo aeronáutico (`Plane` + Matriz), telemetria do transponder em tempo real e ícones temáticos (`Gauge`, `Plane`, `ClipboardList`).
+  * **Torre de Controlo (Dashboard):** Atualização dos cartões de KPI, gráfico de velocidade semanal com agulha de bússola (`recharts` em `#0284c7`), turbina em loading e alertas de turbulência com `CloudLightning`.
+  * **Esquadrão de Missões & Checklists:** Atualização dos ecrãs de projetos e tarefas com badges temáticos (`Hangar / A Fazer`, `Em Voo / Em Progresso`, `Aterrado / Concluído`), atribuição de tripulação ("Pilotos") e comunicações de rádio (`Radio`).
+  * **Captura Automatizada de Screenshots:** Criação do teste Playwright [`tests/e2e/capture-screenshots.spec.ts`](tests/e2e/capture-screenshots.spec.ts) e geração de screenshots de alta resolução no diretório [`docs/ui/screenshots/`](docs/ui/screenshots/).
+
+### Modificado (Changed)
+* **Eliminação de Cores Hardcoded:** Substituição integral de todos os seletores hardcoded `bg-blue-600`, `hover:bg-blue-700` e `text-blue-600` por classes semânticas `bg-aero-600`, `hover:bg-aero-700` e `text-aero-600` em todos os componentes de UI.
+* **Resiliência e Compatibilidade de Testes:** Preservação estrita dos seletores e asserções nos testes E2E do Playwright (`task-lifecycle.spec.ts`) e suites de integração Node.js (`tests/*.test.ts`).
+
+---
+
 ## [1.1.0-rc.1] - 2026-11-12
 
 ### Adicionado (Added)
